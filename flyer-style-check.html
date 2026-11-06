@@ -21,13 +21,24 @@ body{min-height:100vh;display:flex;align-items:center;justify-content:center;bac
 </head>
 <body>
 <article class="card">
-<img class="logo" alt="Говорун AI" src="https://cdn.jsdelivr.net/gh/ynkozlova-cpu/govorun-ai@main/logo-govorun.png">
+<img class="logo" alt="Говорун AI" id="logo" src="">
 <div class="brand">ГОВОРУН <span>AI</span></div>
 <div class="tag">Общается · Анализирует · Обучает</div>
 <div class="line"></div>
 <p class="product">AI-тренажёр для операторов БФЛ</p>
-<p class="note">Мини-флаер для сверки фирменного стиля<br>Логотип: файл logo-govorun.png в репозитории</p>
+<p class="note">Мини-флаер для сверки фирменного стиля</p>
 <div class="pill">брендбук · тест</div>
 </article>
+<script>
+(async()=>{
+  const n=7; const parts=[];
+  for(let i=0;i<n;i++){
+    const r=await fetch('./assets/logo.b64.'+i);
+    if(!r.ok){console.error('logo part',i,r.status);return;}
+    parts.push(await r.text());
+  }
+  document.getElementById('logo').src='data:image/png;base64,'+parts.join('').replace(/\s/g,'');
+})();
+</script>
 </body>
 </html>
