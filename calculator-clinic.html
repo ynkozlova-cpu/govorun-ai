@@ -1,1 +1,196 @@
-PLACEHOLDER
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Говорун AI — Сколько клиника теряет из-за пропущенных звонков?</title>
+<style>
+:root{--bg:#0a0e27;--panel:#15192f;--purple:#6b2fa0;--gold:#d4af37;--white:#f7f7fb;--muted:#b0b0b0;--line:#34364d}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% 0%,#25143e 0,transparent 42%),var(--bg);color:var(--white);font:16px/1.5 Inter,system-ui,sans-serif}
+.wrap{max-width:1100px;margin:auto;padding:32px 18px 44px}
+.brand{font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:700}
+.head{display:flex;gap:24px;justify-content:space-between;align-items:flex-start;margin:10px 0 24px}
+.head h1{font-size:clamp(27px,4vw,42px);line-height:1.1;margin:0 0 12px;max-width:760px}
+.head p{color:var(--muted);margin:0;max-width:740px}
+.pill{border:1px solid #76569a;color:#e5d5f5;border-radius:999px;padding:8px 12px;font-size:12px;white-space:nowrap}
+.layout{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(300px,.9fr);gap:18px}
+.panel{background:linear-gradient(145deg,rgba(31,31,33,.96),rgba(21,25,47,.97));border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 16px 50px #0002}
+.panel h2{font-size:19px;margin:0 0 8px}
+.sub{font-size:13px;color:var(--muted);margin:0 0 20px}
+.field{margin:19px 0 22px}
+.fieldtop{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:8px}
+.field label{font-size:14px;color:#e4e4ec}
+.val{font-size:17px;font-weight:750;color:var(--gold);font-variant-numeric:tabular-nums;white-space:nowrap}
+input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer}
+.marks{display:flex;justify-content:space-between;color:#8f90a6;font-size:11px;margin-top:3px}
+.results{display:flex;flex-direction:column;gap:12px}
+.metric{padding:16px;border:1px solid var(--line);border-radius:14px;background:#0d1127}
+.metric .k{font-size:13px;color:var(--muted);margin-bottom:5px}
+.metric .n{font-size:28px;line-height:1.15;font-weight:800;font-variant-numeric:tabular-nums}
+.metric.primary{border-color:#71518d;background:linear-gradient(120deg,#291840,#12162e)}
+.metric.primary .n{font-size:clamp(28px,4vw,38px);color:var(--gold)}
+.metric .hint{font-size:12px;color:var(--muted);margin-top:6px}
+.formula{border-left:3px solid var(--purple);padding:10px 12px;color:#d5d5e0;font-size:13px;background:#ffffff06;border-radius:0 8px 8px 0;margin-top:16px}
+.note{font-size:12px;color:var(--muted);margin-top:18px}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+.btn{border:1px solid #655078;background:var(--purple);color:white;border-radius:10px;padding:11px 15px;font-weight:650;cursor:pointer;font-size:14px}
+.btn.secondary{background:transparent;border-color:var(--line);color:#eee}
+.foot{margin-top:22px;color:#777b96;font-size:12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.notice{color:#d8c5a0}
+.risk-banner{margin:12px 0 20px;padding:13px 15px;border:1px solid #744b4b;background:linear-gradient(110deg,#351c2b,#15172d);border-radius:13px;color:#f4d8d8;font-size:13px}
+.risk-banner strong{color:#ffb5a8}
+.finance-panel{margin-top:18px}
+.finance-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:14px 0}
+.finance-summary .metric .n{font-size:clamp(19px,2.6vw,29px)}
+.finance-summary .metric{padding:13px}
+.compact-field{display:flex;flex-direction:column;gap:5px;margin:10px 0}
+.compact-field label{font-size:12px;color:#d9d8e4}
+.compact-field input,.compact-field select{width:100%;background:#090d21;border:1px solid #45405c;border-radius:8px;color:#fff;padding:9px;font:inherit;font-size:14px}
+.finance-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.finance-card{border:1px solid var(--line);border-radius:14px;background:#0d1127;padding:14px}
+.finance-card h3{font-size:14px;margin:0 0 10px;color:#e9e5f1}
+@media(max-width:760px){.layout,.finance-summary,.finance-grid{grid-template-columns:1fr}.head{display:block}.pill{display:inline-block;margin-top:16px}}
+@media print{body{background:#fff;color:#111}.actions{display:none}.panel,.metric{background:#fff;border-color:#bbb;box-shadow:none}.metric.primary .n,.val{color:#6b2fa0}}
+</style>
+</head>
+<body>
+<main class="wrap">
+<div class="brand">Говорун AI · Общается. Анализирует. Обучает.</div>
+<header class="head">
+  <div>
+    <h1>Сколько клиника теряет из-за пропущенных звонков?</h1>
+    <p>Сценарная модель для медицинских клиник: оцените потери из-за брошенных входящих звонков и возможный дополнительный маржинальный доход от голосового робота первой линии.</p>
+  </div>
+  <div class="pill">Сценарный расчёт · не прогноз</div>
+</header>
+<div class="risk-banner"><strong>Пациент не ждёт бесконечно:</strong> окно выбора может составлять 5–15 минут. Пациент может записаться в другую клинику, которая ответила раньше.</div>
+<div class="layout">
+<section class="panel">
+  <h2>Настройте параметры клиники</h2>
+  <p class="sub">Меняйте значения во время презентации — результаты пересчитываются автоматически.</p>
+  <div class="field"><div class="fieldtop"><label for="calls">Входящие звонки в месяц</label><output class="val" id="callsV"></output></div>
+  <input id="calls" type="range" min="0" max="10000" step="100" value="800"><div class="marks"><span>0</span><span>5 000</span><span>10 000</span></div></div>
+  <div class="field"><div class="fieldtop"><label for="chats">Заявки с сайта / мессенджеров в месяц</label><output class="val" id="chatsV"></output></div>
+  <input id="chats" type="range" min="0" max="10000" step="100" value="200"><div class="marks"><span>0</span><span>5 000</span><span>10 000</span></div></div>
+  <div class="field"><div class="fieldtop"><label for="unprocessed">Доля не обработанных вовремя (за 15 мин), %</label><output class="val" id="unprocessedV"></output></div>
+  <input id="unprocessed" type="range" min="0" max="60" step="1" value="20"><div class="marks"><span>0%</span><span>30%</span><span>60%</span></div></div>
+  <div class="field"><div class="fieldtop"><label for="commercial">Доля коммерческих (запись / платные услуги), %</label><output class="val" id="commercialV"></output></div>
+  <input id="commercial" type="range" min="0" max="100" step="5" value="60"><div class="marks"><span>0%</span><span>50%</span><span>100%</span></div></div>
+  <div class="field"><div class="fieldtop"><label for="recover">Доля, которую робот поможет вернуть, %</label><output class="val" id="recoverV"></output></div>
+  <input id="recover" type="range" min="0" max="100" step="5" value="50"><div class="marks"><span>0%</span><span>50%</span><span>100%</span></div></div>
+  <div class="field"><div class="fieldtop"><label for="conversion">Конверсия возвращённых в визит / услугу, %</label><output class="val" id="conversionV"></output></div>
+  <input id="conversion" type="range" min="0" max="100" step="5" value="30"><div class="marks"><span>0%</span><span>50%</span><span>100%</span></div></div>
+  <div class="field"><div class="fieldtop"><label for="margin">Маржа с одного визита / услуги, ₽</label><output class="val" id="marginV"></output></div>
+  <input id="margin" type="range" min="100" max="200000" step="100" value="5000"><div class="marks"><span>100 ₽</span><span>100 000 ₽</span><span>200 000 ₽</span></div></div>
+  <div class="actions"><button class="btn secondary" id="reset" type="button">Исходный сценарий</button><button class="btn secondary" id="print" type="button">Печать / PDF</button></div>
+</section>
+<section class="panel">
+  <h2>Результат сценария</h2>
+  <p class="sub">Потенциальный эффект до стоимости робота, внедрения и эксплуатации.</p>
+  <div class="results">
+    <div class="metric"><div class="k">Всего входящих обращений</div><div class="n" id="total">—</div><div class="hint">Звонки + заявки в месяц</div></div>
+    <div class="metric"><div class="k">Потенциально потерянные коммерческие обращения</div><div class="n" id="atRisk">—</div><div class="hint">В месяц</div></div>
+    <div class="metric"><div class="k">Обращения, возвращённые в работу</div><div class="n" id="recovered">—</div><div class="hint">В месяц</div></div>
+    <div class="metric"><div class="k">Дополнительные визиты / услуги</div><div class="n" id="sales">—</div><div class="hint">По сценарию</div></div>
+    <div class="metric primary"><div class="k">Потенциальный дополнительный маржинальный доход</div><div class="n" id="money">—</div><div class="hint">До стоимости решения</div></div>
+  </div>
+  <div class="formula" id="formula"></div>
+  <p class="note"><strong class="notice">Важно:</strong> значения по умолчанию — демонстрационные гипотезы, не статистика конкретной клиники. Не каждый брошенный звонок = потерянный пациент. Подтвердите данными АТС/CRM и пилотом.</p>
+  <div class="actions"><button class="btn" id="copy" type="button">Скопировать результаты</button></div>
+  <p id="copyStatus" class="note" aria-live="polite"></p>
+</section>
+</div>
+
+<section class="panel finance-panel">
+  <h2>Экономика: оператор или робот</h2>
+  <p class="sub">Упрощённый сценарный расчёт. Все поля можно менять.</p>
+  <div class="finance-summary">
+    <div class="metric primary"><div class="k">Потерянная маржа / мес</div><div class="n" id="fLost">—</div></div>
+    <div class="metric"><div class="k">1 оператор / мес</div><div class="n" id="fOp">—</div></div>
+    <div class="metric"><div class="k">Робот / мес</div><div class="n" id="fRob">—</div></div>
+    <div class="metric primary"><div class="k">Выгода / мес (после робота)</div><div class="n" id="fNet">—</div></div>
+  </div>
+  <div class="finance-grid">
+    <div class="finance-card">
+      <h3>Оператор</h3>
+      <div class="compact-field"><label for="salary">Оклад «на руки», ₽</label><input id="salary" type="number" value="45000" min="0" step="1000"></div>
+      <div class="compact-field"><label for="tax">Нагрузка работодателя, %</label><input id="tax" type="number" value="30" min="0" max="100" step="1"></div>
+    </div>
+    <div class="finance-card">
+      <h3>Робот</h3>
+      <div class="compact-field"><label for="robotMonth">Подписка / мес, ₽</label><input id="robotMonth" type="number" value="25000" min="0" step="1000"></div>
+      <div class="compact-field"><label for="setup">Разовый запуск, ₽</label><input id="setup" type="number" value="50000" min="0" step="1000"></div>
+    </div>
+    <div class="finance-card">
+      <h3>Горизонт</h3>
+      <div class="compact-field"><label for="months">Месяцев в расчёте</label><input id="months" type="number" value="12" min="1" max="36" step="1"></div>
+      <p class="note" style="margin:8px 0 0">Выгода за период: <strong id="fPeriod" style="color:var(--gold)">—</strong></p>
+      <p class="note" style="margin:4px 0 0">Окупаемость запуска: <strong id="fPayback" style="color:var(--gold)">—</strong></p>
+    </div>
+  </div>
+</section>
+
+<footer class="foot"><span>Говорун AI · калькулятор для клиник v2</span><span>Сценарная модель · не гарантия результата</span></footer>
+</main>
+<script>
+const $ = id => document.getElementById(id);
+const money = n => new Intl.NumberFormat('ru-RU').format(Math.round(n)) + ' ₽';
+const num = n => new Intl.NumberFormat('ru-RU').format(Math.round(n));
+const defaults = {calls:800,chats:200,unprocessed:20,commercial:60,recover:50,conversion:30,margin:5000};
+
+function scenario(){
+  const calls=+$('calls').value, chats=+$('chats').value;
+  const unprocessed=+$('unprocessed').value/100, commercial=+$('commercial').value/100;
+  const recover=+$('recover').value/100, conversion=+$('conversion').value/100, margin=+$('margin').value;
+  const total=calls+chats;
+  const atRisk=total*unprocessed*commercial;
+  const recovered=atRisk*recover;
+  const sales=recovered*conversion;
+  const revenue=sales*margin;
+  return {calls,chats,unprocessed,commercial,recover,conversion,margin,total,atRisk,recovered,sales,revenue};
+}
+
+function render(){
+  const s=scenario();
+  $('callsV').textContent=num(s.calls);
+  $('chatsV').textContent=num(s.chats);
+  $('unprocessedV').textContent=Math.round(s.unprocessed*100)+'%';
+  $('commercialV').textContent=Math.round(s.commercial*100)+'%';
+  $('recoverV').textContent=Math.round(s.recover*100)+'%';
+  $('conversionV').textContent=Math.round(s.conversion*100)+'%';
+  $('marginV').textContent=money(s.margin);
+  $('total').textContent=num(s.total);
+  $('atRisk').textContent=num(s.atRisk);
+  $('recovered').textContent=num(s.recovered);
+  $('sales').textContent=num(s.sales);
+  $('money').textContent=money(s.revenue);
+  $('formula').textContent=`Формула: (${num(s.calls)} + ${num(s.chats)}) × ${Math.round(s.unprocessed*100)}% × ${Math.round(s.commercial*100)}% × ${Math.round(s.recover*100)}% × ${Math.round(s.conversion*100)}% × ${money(s.margin)} ≈ ${money(s.revenue)}`;
+  const salary=+$('salary').value, tax=+$('tax').value/100;
+  const op=salary*(1+tax);
+  const rob=+$('robotMonth').value, setup=+$('setup').value, months=+$('months').value;
+  const lost=s.revenue;
+  const net=lost-rob;
+  const period=net*months - setup;
+  const payback = net>0 ? (setup/net) : null;
+  $('fLost').textContent=money(lost);
+  $('fOp').textContent=money(op);
+  $('fRob').textContent=money(rob);
+  $('fNet').textContent=money(net);
+  $('fPeriod').textContent=money(period);
+  $('fPayback').textContent=payback==null ? 'н/д' : (payback<=0 ? 'сразу' : payback.toFixed(1)+' мес.');
+}
+
+['calls','chats','unprocessed','commercial','recover','conversion','margin','salary','tax','robotMonth','setup','months']
+  .forEach(id => $(id).addEventListener('input', render));
+$('reset').onclick=()=>{Object.entries(defaults).forEach(([k,v])=>$(k).value=v);render();};
+$('print').onclick=()=>window.print();
+$('copy').onclick=async()=>{
+  const s=scenario();
+  const text=`Говорун AI — клиники v2\nОбращений: ${num(s.total)}\nПотерянные коммерческие: ${num(s.atRisk)}\nВозвращённые: ${num(s.recovered)}\nВизиты/услуги: ${num(s.sales)}\nМаржа: ${money(s.revenue)}\n(сценарный расчёт, не прогноз)`;
+  try{await navigator.clipboard.writeText(text);$('copyStatus').textContent='Скопировано';}
+  catch(e){$('copyStatus').textContent='Не удалось скопировать';}
+};
+render();
+</script>
+</body>
+</html>
