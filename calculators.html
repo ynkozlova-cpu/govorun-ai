@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Говорун AI — Калькуляторы эффекта</title>
+<meta name="description" content="Сценарные калькуляторы Говорун AI для БФЛ, бизнеса и медицинских клиник. Оценка потерь от необработанных обращений.">
+<style>
+:root{--bg:#0a0e27;--panel:#15192f;--purple:#6b2fa0;--gold:#d4af37;--white:#f7f7fb;--muted:#b0b0b0;--line:#34364d}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(ellipse at 80% 0%,#25143e 0,transparent 45%),var(--bg);color:var(--white);font:16px/1.55 Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;min-height:100vh}
+.wrap{max-width:980px;margin:auto;padding:36px 18px 56px}
+.brand{font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);font-weight:700}
+h1{font-size:clamp(28px,4.2vw,40px);line-height:1.15;margin:12px 0 10px;max-width:720px}
+.lead{color:var(--muted);max-width:700px;margin:0 0 28px}
+.notice{border:1px solid #5a4568;background:#16122a;border-radius:12px;padding:12px 14px;font-size:13px;color:#d5cce6;margin-bottom:28px}
+.notice strong{color:var(--gold)}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.card{background:linear-gradient(145deg,rgba(31,31,33,.96),rgba(21,25,47,.97));border:1px solid var(--line);border-radius:18px;padding:22px 20px;display:flex;flex-direction:column;min-height:100%;box-shadow:0 14px 40px #0003}
+.tag{display:inline-block;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#e5d5f5;border:1px solid #76569a;border-radius:999px;padding:5px 10px;margin-bottom:12px}
+.card h2{font-size:20px;margin:0 0 10px;line-height:1.25}
+.card p{color:var(--muted);font-size:14px;margin:0 0 12px;flex-grow:1}
+.list{margin:0 0 18px;padding:0 0 0 18px;color:#d0cde0;font-size:13px}
+.list li{margin:4px 0}
+.btn{display:inline-block;text-align:center;text-decoration:none;border:1px solid #655078;background:var(--purple);color:#fff;border-radius:10px;padding:11px 14px;font-weight:650;font-size:14px}
+.btn:hover{filter:brightness(1.08)}
+.btn.secondary{background:transparent;border-color:var(--line);color:#eee;margin-left:8px;font-size:13px;padding:10px 12px}
+.meta{margin-top:28px;font-size:12px;color:#777b96;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.meta a{color:#b9a3d6}
+@media(max-width:820px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="brand">Говорун AI · Общается. Анализирует. Обучает.</div>
+  <h1>Калькуляторы эффекта голосового робота</h1>
+  <p class="lead">Сценарные модели для презентаций и коммерческих предложений. Помогают оценить потенциальные потери от необработанных обращений и обсудить эффект автоматизации первой линии.</p>
+
+  <div class="notice"><strong>Важно:</strong> это не прогноз и не обещание результата. Значения по умолчанию — демонстрационные гипотезы. Перед решением замените допущения данными телефонии/CRM и проверьте пилотом.</div>
+
+  <div class="grid">
+    <article class="card">
+      <span class="tag">БФЛ</span>
+      <h2>Компании по банкротству физлиц</h2>
+      <p>Для РОПов и собственников юридических компаний: потери подходящих лидов из‑за задержки ответа и эффект своевременного контакта.</p>
+      <ul class="list">
+        <li>Входящие лиды и доля «не вовремя»</li>
+        <li>Подходящие обращения и возврат в работу</li>
+        <li>Договоры и маржинальный доход</li>
+        <li>Сравнение: оператор и робот</li>
+      </ul>
+      <div>
+        <a class="btn" href="./index.html">Открыть калькулятор БФЛ</a>
+      </div>
+    </article>
+
+    <article class="card">
+      <span class="tag">Бизнес</span>
+      <h2>Универсальный для бизнеса</h2>
+      <p>Для компаний, которые получают клиентов по телефону и в чатах. Оценка потерь от задержек и эффекта автоматизации первой линии.</p>
+      <ul class="list">
+        <li>Звонки и чаты / сообщения</li>
+        <li>Коммерческие обращения</li>
+        <li>Возврат в работу и продажи</li>
+        <li>Экономика оператора и робота</li>
+      </ul>
+      <div>
+        <a class="btn" href="./calculator-business.html">Открыть бизнес-калькулятор</a>
+      </div>
+    </article>
+
+    <article class="card">
+      <span class="tag">Клиники</span>
+      <h2>Медицинские клиники</h2>
+      <p>Для клиник: потери из‑за пропущенных звонков и заявок, возврат в запись и дополнительный маржинальный доход с визитов.</p>
+      <ul class="list">
+        <li>Звонки и заявки с сайта / мессенджеров</li>
+        <li>Коммерческие обращения (запись / услуги)</li>
+        <li>Возврат и конверсия в визит</li>
+        <li>Упрощённая экономика робота</li>
+      </ul>
+      <div>
+        <a class="btn" href="./calculator-clinic.html">Открыть калькулятор клиник</a>
+      </div>
+    </article>
+  </div>
+
+  <div class="meta">
+    <span>Говорун AI · витрина калькуляторов</span>
+    <span>Прямые ссылки можно вставлять в КП: <a href="./index.html">БФЛ</a> · <a href="./calculator-business.html">бизнес</a> · <a href="./calculator-clinic.html">клиники</a></span>
+  </div>
+</main>
+</body>
+</html>
