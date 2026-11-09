@@ -1,24 +1,3652 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Govorun AI — БФЛ лендинг (ожидает загрузку полного файла)</title>
-<style>
-body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#121212;color:#fff;font-family:Inter,system-ui,sans-serif;padding:24px;text-align:center}
-.card{max-width:480px;border:1px solid #3A3A3C;border-radius:8px;padding:32px 24px;background:#1C1C1E}
-img{width:96px;height:auto;margin-bottom:16px}
-h1{font-size:1.25rem;margin:0 0 8px}
-p{color:#A0A0A0;font-size:0.95rem;line-height:1.5;margin:0 0 16px}
-a{color:#D4AF37}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="narrative">
+  <meta name="design-style" content="nocturne">
+  <title>Govorun AI: Автоматическая квалификация лидов и первичный обзвон для БФЛ</title>
+  <!-- BRAND PATCH A: real logo, real wav, Inter, soft ROI, tighter radius -->
+  
+  <!-- Approved Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Approved Lucide Icons -->
+  <script src="https://unpkg.com/lucide@1.43.0/dist/umd/lucide.min.js"></script>
+
+  <style>
+    /* -------------------------------------------------------------
+       ROOT DESIGN SYSTEM (NOCTURNE WITH METALLIC GOLD ACCENTS)
+       ------------------------------------------------------------- */
+    :root {
+      color-scheme: dark;
+
+      /* Canvas & Dark Graphite Palette (Strictly #121212 based) */
+      --background: #121212;
+      --surface-container-low: #161a22;
+      --surface-container: #1b212c;
+      --surface-container-high: #232c3a;
+      --surface-container-highest: #2d3748;
+      --surface-well: #0c1017;
+      --surface-card: #171d27;
+
+      /* Ink / Typography */
+      --on-surface: #f3ede2;
+      --on-surface-variant: #9aa8bf;
+      --on-surface-muted: #62728c;
+      --on-surface-subtle: #455268;
+
+      /* Borders & Rule Lines */
+      --outline: #364868;
+      --outline-variant: #222f44;
+      --outline-subtle: #172130;
+
+      /* Premium Metallic Gold Accents (#D4AF37, <= 5% surface area) */
+      --primary: #d4af37;
+      --primary-hover: #e6c254;
+      --primary-dim: #997b20;
+      --primary-glow: rgba(212, 175, 55, 0.22);
+      --on-primary: #121212;
+      --primary-container: #292415;
+      --on-primary-container: #faecc9;
+
+      /* Secondary and Tech Tones */
+      --secondary: #687a99;
+      --tertiary: #52a9d8;
+      --tertiary-container: #132a3a;
+      --on-tertiary-container: #bde4fc;
+
+      /* Semantics */
+      --positive: #34d399;
+      --positive-container: #0f2e22;
+      --on-positive: #032216;
+      --warning: #fbbf24;
+      --warning-container: #332608;
+      --pain: #8B0000;
+      --error: #f87171;
+      --error-container: #331313;
+      --on-error: #1f0808;
+
+      /* Focus Ring */
+      --focus: #d4af37;
+
+      /* Typography Families */
+      --font-headline: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-label: 'JetBrains Mono', monospace;
+
+      /* Type Scale (Narrative with Embedded Tool) */
+      --display-size: clamp(2.1rem, 1.3rem + 3.2vw, 3.6rem);
+      --headline-size: clamp(1.65rem, 1.15rem + 1.8vw, 2.3rem);
+      --section-size: clamp(1.35rem, 1.05rem + 1vw, 1.75rem);
+      --subhead-size: clamp(1.05rem, 0.95rem + 0.4vw, 1.28rem);
+      --body-size: clamp(0.9375rem, 0.88rem + 0.2vw, 1.05rem);
+      --label-size: 0.75rem;
+
+      /* Spacing Scale (4pt base) */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.5rem;
+      --space-2xl: 4rem;
+      --space-3xl: 6rem;
+
+      /* Radius */
+      --radius-sm: 4px;
+      --radius-md: 4px;
+      --radius-lg: 6px;
+      --radius-xl: 8px;
+      --radius-full: 9999px;
+
+      /* Motion */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 220ms;
+      --dur-long: 420ms;
+    }
+
+    /* -------------------------------------------------------------
+       BASE RESETS & LAYOUT
+       ------------------------------------------------------------- */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      overflow-x: clip;
+      background-color: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    body {
+      overflow-x: clip;
+      min-height: 100vh;
+      background-color: var(--background);
+      background-image: 
+        radial-gradient(ellipse 80% 50% at 50% -20%, rgba(212, 175, 55, 0.08), transparent 70%),
+        radial-gradient(ellipse 60% 40% at 80% 30%, rgba(82, 169, 216, 0.05), transparent 60%),
+        linear-gradient(to right, var(--outline-subtle) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--outline-subtle) 1px, transparent 1px);
+      background-size: 100% 100%, 100% 100%, 48px 48px, 48px 48px;
+      background-position: 0 0, 0 0, -1px -1px, -1px -1px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button, input, select, textarea {
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      background: none;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* -------------------------------------------------------------
+       CONTAINER & TYPOGRAPHY UTILS
+       ------------------------------------------------------------- */
+    .app-container {
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: var(--space-lg);
+      padding-right: var(--space-lg);
+    }
+
+    .mono-num {
+      font-family: var(--font-label);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+    }
+
+    .badge-gold {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: var(--space-xs) var(--space-md);
+      background: var(--primary-container);
+      color: var(--primary);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      border-radius: var(--radius-full);
+      box-shadow: 0 0 12px rgba(212, 175, 55, 0.15);
+    }
+
+    .badge-tag {
+      display: inline-flex;
+      align-items: center;
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      color: var(--on-surface-variant);
+      background: var(--surface-container-high);
+      border: 1px solid var(--outline-variant);
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--radius-sm);
+    }
+
+    /* -------------------------------------------------------------
+       HEADER & NAVIGATION BAR
+       ------------------------------------------------------------- */
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(14px);
+      background: rgba(18, 18, 18, 0.88);
+      border-bottom: 1px solid var(--outline-variant);
+      padding-top: var(--space-md);
+      padding-bottom: var(--space-md);
+    }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+    }
+
+    .brand-block {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+    }
+
+    .brand-logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .logo-bird-icon {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      object-fit: contain;
+      filter: drop-shadow(0 2px 8px rgba(212, 175, 55, 0.4));
+    }
+
+    .brand-name {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--on-surface);
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+
+    .brand-name span {
+      color: var(--primary);
+      font-weight: 900;
+    }
+
+    .brand-tagline {
+      font-family: var(--font-label);
+      font-size: 0.72rem;
+      color: var(--on-surface-muted);
+      letter-spacing: 0.04em;
+    }
+
+    .brand-domain-tag {
+      font-family: var(--font-label);
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--primary);
+      background: rgba(212, 175, 55, 0.1);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      letter-spacing: 0.05em;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: var(--space-lg);
+      list-style: none;
+    }
+
+    .nav-link-item {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--on-surface-variant);
+      transition: color var(--dur-short) var(--ease-out);
+    }
+
+    .nav-link-item:hover {
+      color: var(--primary);
+    }
+
+    .header-cta-group {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    /* -------------------------------------------------------------
+       BUTTONS & CONTROLS
+       ------------------------------------------------------------- */
+    .btn-gold {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      font-family: var(--font-headline);
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--on-primary);
+      background: linear-gradient(135deg, #f7d56e, #d4af37 60%, #b38e21);
+      padding: var(--space-sm) var(--space-lg);
+      border-radius: var(--radius-md);
+      box-shadow: 0 4px 16px rgba(212, 175, 55, 0.3);
+      transition: transform var(--dur-micro) var(--ease-out), box-shadow var(--dur-short) var(--ease-out);
+    }
+
+    .btn-gold:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 22px rgba(212, 175, 55, 0.45);
+    }
+
+    .btn-gold:active {
+      transform: translateY(1px);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      font-family: var(--font-headline);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--on-surface);
+      background: var(--surface-container-high);
+      border: 1px solid var(--outline);
+      padding: var(--space-sm) var(--space-lg);
+      border-radius: var(--radius-md);
+      transition: background var(--dur-short) var(--ease-out), border-color var(--dur-short) var(--ease-out);
+    }
+
+    .btn-secondary:hover {
+      background: var(--surface-container-highest);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-tg-accent {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      font-family: var(--font-headline);
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: #ffffff;
+      background: linear-gradient(135deg, #27a7e7, #1e88e5);
+      padding: var(--space-sm) var(--space-lg);
+      border-radius: var(--radius-md);
+      box-shadow: 0 4px 16px rgba(39, 167, 231, 0.3);
+      transition: transform var(--dur-micro) var(--ease-out), box-shadow var(--dur-short) var(--ease-out);
+    }
+
+    .btn-tg-accent:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(39, 167, 231, 0.45);
+    }
+
+    /* -------------------------------------------------------------
+       HERO SECTION
+       ------------------------------------------------------------- */
+    .hero-section {
+      padding-top: var(--space-3xl);
+      padding-bottom: var(--space-3xl);
+      position: relative;
+    }
+
+    .hero-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.85fr);
+      gap: var(--space-2xl);
+      align-items: center;
+    }
+
+    .hero-content {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+    }
+
+    .hero-title {
+      font-size: var(--display-size);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+      color: var(--on-surface);
+    }
+
+    .hero-title-highlight {
+      background: linear-gradient(135deg, #fae8b4, #d4af37 60%, #dfaa5b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-subtitle {
+      font-size: var(--subhead-size);
+      color: var(--on-surface-variant);
+      line-height: 1.6;
+      max-width: 62ch;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--space-md);
+      margin-top: var(--space-xs);
+    }
+
+    .hero-kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-md);
+      margin-top: var(--space-md);
+    }
+
+    .kpi-card {
+      background: var(--surface-card);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--radius-md);
+      padding: var(--space-md) var(--space-lg);
+      position: relative;
+      overflow: hidden;
+      transition: border-color var(--dur-short) var(--ease-out);
+    }
+
+    .kpi-card:hover {
+      border-color: rgba(212, 175, 55, 0.4);
+    }
+
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--primary);
+    }
+
+    .kpi-card-val {
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1.1;
+    }
+
+    .kpi-card-label {
+      font-size: 0.8125rem;
+      color: var(--on-surface-variant);
+      margin-top: var(--space-xs);
+    }
+
+    /* Hero Live Telephony Card Visual */
+    .hero-visual-card {
+      background: var(--surface-card);
+      border: 1px solid var(--outline);
+      border-radius: var(--radius-xl);
+      padding: var(--space-lg);
+      position: relative;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), 0 0 30px rgba(212, 175, 55, 0.08);
+      overflow: hidden;
+    }
+
+    .hero-visual-card::before {
+      content: '';
+      position: absolute;
+      top: -120px;
+      right: -120px;
+      width: 240px;
+      height: 240px;
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.15), transparent 70%);
+      pointer-events: none;
+    }
+
+    .hud-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--outline-variant);
+      padding-bottom: var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+
+    .hud-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-label);
+      font-size: 0.72rem;
+      color: var(--positive);
+      background: var(--positive-container);
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      font-weight: 600;
+    }
+
+    .hud-pulse-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--positive);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--positive);
+    }
+
+    .hud-lead-preview {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .lead-meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8125rem;
+      color: var(--on-surface-variant);
+    }
+
+    .lead-meta-val {
+      color: var(--on-surface);
+      font-weight: 600;
+    }
+
+    .qualify-checklist {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: var(--space-sm);
+      margin-bottom: var(--space-sm);
+    }
+
+    .qualify-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 10px;
+      background: var(--surface-container-high);
+      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
+    }
+
+    .qualify-item-check {
+      color: var(--positive);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 600;
+    }
+
+    /* -------------------------------------------------------------
+       SECTION GENERAL STYLING
+       ------------------------------------------------------------- */
+    .content-section {
+      padding-top: var(--space-3xl);
+      padding-bottom: var(--space-3xl);
+      border-top: 1px solid var(--outline-subtle);
+    }
+
+    .section-header-block {
+      text-align: center;
+      max-width: 780px;
+      margin-left: auto;
+      margin-right: auto;
+      margin-bottom: var(--space-2xl);
+    }
+
+    .section-eyebrow {
+      font-family: var(--font-label);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: var(--space-xs);
+    }
+
+    .section-heading {
+      font-size: var(--headline-size);
+      font-weight: 800;
+      color: var(--on-surface);
+      letter-spacing: -0.02em;
+      line-height: 1.25;
+      margin-bottom: var(--space-sm);
+    }
+
+    .section-lead {
+      font-size: var(--subhead-size);
+      color: var(--on-surface-variant);
+      line-height: 1.6;
+    }
+
+    /* -------------------------------------------------------------
+       SECTION 2: INTERACTIVE AUDIO PLAYER & TRANSCRIPT
+       ------------------------------------------------------------- */
+    .player-card {
+      background: var(--surface-card);
+      border: 1px solid var(--outline);
+      border-radius: var(--radius-xl);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+      overflow: hidden;
+    }
+
+    .case-tabs-bar {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      background: var(--surface-container-low);
+      border-bottom: 1px solid var(--outline-variant);
+    }
+
+    .case-tab-btn {
+      padding: var(--space-md) var(--space-lg);
+      text-align: left;
+      border-right: 1px solid var(--outline-variant);
+      transition: background var(--dur-short) var(--ease-out), color var(--dur-short) var(--ease-out);
+      position: relative;
+    }
+
+    .case-tab-btn:last-child {
+      border-right: none;
+    }
+
+    .case-tab-btn.active {
+      background: var(--surface-container);
+    }
+
+    .case-tab-btn.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--primary);
+    }
+
+    .tab-case-number {
+      font-family: var(--font-label);
+      font-size: 0.7rem;
+      color: var(--primary);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .tab-case-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--on-surface);
+      margin-top: 2px;
+      line-height: 1.3;
+    }
+
+    .tab-case-meta {
+      font-size: 0.75rem;
+      color: var(--on-surface-muted);
+      margin-top: 4px;
+    }
+
+    .player-body-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+      min-height: 520px;
+    }
+
+    .player-console-pane {
+      padding: var(--space-xl);
+      background: var(--surface-card);
+      border-right: 1px solid var(--outline-variant);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--space-lg);
+    }
+
+    .audio-waveform-container {
+      background: var(--surface-well);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--radius-lg);
+      padding: var(--space-md);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .waveform-canvas {
+      width: 100%;
+      height: 110px;
+      display: block;
+      border-radius: var(--radius-sm);
+    }
+
+    .waveform-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-label);
+      font-size: 0.72rem;
+      color: var(--on-surface-muted);
+    }
+
+    .sound-active-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .sound-active-status.playing {
+      color: var(--positive);
+    }
+
+    /* Player Controls */
+    .player-controls-strip {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .scrub-timeline-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .scrub-slider {
+      width: 100%;
+      height: 6px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: var(--surface-container-highest);
+      border-radius: var(--radius-full);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .scrub-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--primary);
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
+      cursor: pointer;
+      border: 2px solid var(--background);
+      transition: transform var(--dur-micro) var(--ease-out);
+    }
+
+    .scrub-slider::-webkit-slider-thumb:hover {
+      transform: scale(1.2);
+    }
+
+    .scrub-slider::-moz-range-thumb {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--primary);
+      box-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
+      cursor: pointer;
+      border: 2px solid var(--background);
+    }
+
+    .time-readout-row {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-label);
+      font-size: 0.75rem;
+      color: var(--on-surface-variant);
+    }
+
+    .btn-controls-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+    }
+
+    .primary-audio-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+    }
+
+    .btn-play-pause {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: var(--on-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(212, 175, 55, 0.4);
+      transition: transform var(--dur-micro) var(--ease-out), background-color var(--dur-short) var(--ease-out);
+    }
+
+    .btn-play-pause:hover {
+      transform: scale(1.06);
+      background: var(--primary-hover);
+    }
+
+    .btn-audio-step {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: var(--surface-container-high);
+      color: var(--on-surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--outline);
+      transition: color var(--dur-short) var(--ease-out), border-color var(--dur-short) var(--ease-out);
+    }
+
+    .btn-audio-step:hover {
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .aux-controls-group {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .speed-toggle-btn {
+      font-family: var(--font-label);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 8px;
+      background: var(--surface-container-high);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--radius-sm);
+      color: var(--on-surface-variant);
+      transition: color var(--dur-short) var(--ease-out), border-color var(--dur-short) var(--ease-out);
+    }
+
+    .speed-toggle-btn.active {
+      color: var(--primary);
+      border-color: var(--primary);
+      background: var(--primary-container);
+    }
+
+    .mute-btn {
+      padding: 6px;
+      color: var(--on-surface-variant);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mute-btn:hover {
+      color: var(--on-surface);
+    }
+
+    /* Transcript Pane */
+    .transcript-pane {
+      padding: var(--space-lg);
+      background: var(--surface-container-low);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+      max-height: 540px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--outline) transparent;
+    }
+
+    .transcript-header-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: var(--space-sm);
+      border-bottom: 1px solid var(--outline-variant);
+    }
+
+    .transcript-title {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--on-surface-variant);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .transcript-hint {
+      font-size: 0.72rem;
+      color: var(--on-surface-muted);
+    }
+
+    .transcript-dialog-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .dialog-item {
+      padding: var(--space-md);
+      border-radius: var(--radius-md);
+      background: var(--surface-card);
+      border: 1px solid var(--outline-variant);
+      transition: border-color var(--dur-short) var(--ease-out), background var(--dur-short) var(--ease-out);
+      cursor: pointer;
+    }
+
+    .dialog-item:hover {
+      border-color: var(--outline);
+      background: var(--surface-container);
+    }
+
+    .dialog-item.active {
+      border-color: var(--primary);
+      background: rgba(212, 175, 55, 0.08);
+      box-shadow: 0 0 16px rgba(212, 175, 55, 0.12);
+    }
+
+    .dialog-speaker-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 4px;
+    }
+
+    .speaker-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .speaker-label.robot {
+      color: var(--primary);
+    }
+
+    .speaker-label.client {
+      color: var(--tertiary);
+    }
+
+    .dialog-timestamp {
+      font-family: var(--font-label);
+      font-size: 0.72rem;
+      color: var(--on-surface-muted);
+    }
+
+    .dialog-text {
+      font-size: 0.875rem;
+      line-height: 1.5;
+      color: var(--on-surface);
+    }
+
+    .qualify-milestone-tag {
+      display: inline-block;
+      margin-top: 6px;
+      font-family: var(--font-label);
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--on-surface);
+      background: var(--surface-container-highest);
+      border-left: 3px solid var(--primary);
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+    }
+
+    /* -------------------------------------------------------------
+       SECTION 3: INTERACTIVE ROI & ORDER CALCULATOR
+       ------------------------------------------------------------- */
+    .calculator-wrapper {
+      background: var(--surface-card);
+      border: 1px solid var(--outline);
+      border-radius: var(--radius-xl);
+      padding: var(--space-2xl);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+    }
+
+    .calc-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      gap: var(--space-2xl);
+    }
+
+    .calc-inputs-pane {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xl);
+    }
+
+    .slider-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .slider-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .slider-label {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--on-surface);
+    }
+
+    .slider-val-box {
+      font-family: var(--font-label);
+      font-size: 1.125rem;
+      font-weight: 700;
+      color: var(--primary);
+      background: var(--surface-well);
+      border: 1px solid var(--outline-variant);
+      padding: 4px 12px;
+      border-radius: var(--radius-sm);
+      min-width: 110px;
+      text-align: right;
+    }
+
+    .range-input {
+      width: 100%;
+      height: 8px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: var(--surface-container-highest);
+      border-radius: var(--radius-full);
+      outline: none;
+      cursor: pointer;
+    }
+
+    .range-input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--primary);
+      box-shadow: 0 0 12px rgba(212, 175, 55, 0.6);
+      cursor: pointer;
+      border: 2px solid var(--background);
+      transition: transform var(--dur-micro) var(--ease-out);
+    }
+
+    .range-input::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+
+    .range-input::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--primary);
+      box-shadow: 0 0 12px rgba(212, 175, 55, 0.6);
+      cursor: pointer;
+      border: 2px solid var(--background);
+    }
+
+    .slider-sub-hint {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-label);
+      font-size: 0.72rem;
+      color: var(--on-surface-muted);
+    }
+
+    /* Calculator Results Card */
+    .calc-results-pane {
+      background: var(--surface-well);
+      border: 1px solid var(--outline);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--space-lg);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .calc-results-pane::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 160px;
+      height: 160px;
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.12), transparent 70%);
+      pointer-events: none;
+    }
+
+    .calc-hero-stat {
+      border-bottom: 1px solid var(--outline-variant);
+      padding-bottom: var(--space-lg);
+    }
+
+    .calc-hero-label {
+      font-family: var(--font-label);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--primary);
+    }
+
+    .calc-hero-number {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--on-surface);
+      line-height: 1.1;
+      margin-top: var(--space-xs);
+    }
+
+    .calc-hero-sub {
+      font-size: 0.8125rem;
+      color: var(--on-surface-variant);
+      margin-top: 6px;
+    }
+
+    .calc-stat-breakdown {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .breakdown-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.875rem;
+    }
+
+    .breakdown-label {
+      color: var(--on-surface-variant);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .breakdown-val {
+      font-weight: 700;
+      font-family: var(--font-label);
+    }
+
+    .breakdown-val.loss {
+      color: var(--error);
+    }
+
+    .breakdown-val.gain {
+      color: var(--positive);
+    }
+
+    .order-summary-box {
+      background: var(--surface-container-high);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+    }
+
+    .order-summary-title {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--on-surface);
+      margin-bottom: 4px;
+    }
+
+    .order-summary-desc {
+      font-size: 0.75rem;
+      color: var(--on-surface-variant);
+      margin-bottom: var(--space-md);
+      line-height: 1.4;
+    }
+
+    /* -------------------------------------------------------------
+       SECTION 4: COMPARATIVE MATRIX & CRM FUNNEL
+       ------------------------------------------------------------- */
+    .compare-controls-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      margin-bottom: var(--space-xl);
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      font-family: var(--font-label);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      padding: var(--space-xs) var(--space-md);
+      border-radius: var(--radius-full);
+      background: var(--surface-container);
+      border: 1px solid var(--outline-variant);
+      color: var(--on-surface-variant);
+      transition: all var(--dur-short) var(--ease-out);
+    }
+
+    .filter-btn:hover {
+      border-color: var(--primary);
+      color: var(--on-surface);
+    }
+
+    .filter-btn.active {
+      background: var(--primary-container);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .comparison-table-wrap {
+      background: var(--surface-card);
+      border: 1px solid var(--outline);
+      border-radius: var(--radius-xl);
+      overflow-x: auto;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+      margin-bottom: var(--space-3xl);
+    }
+
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .comparison-table th {
+      padding: var(--space-md) var(--space-lg);
+      background: var(--surface-container-low);
+      font-family: var(--font-label);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--on-surface-muted);
+      border-bottom: 1px solid var(--outline-variant);
+    }
+
+    .comparison-table th.highlight-col {
+      color: var(--primary);
+      background: rgba(212, 175, 55, 0.08);
+      border-bottom: 2px solid var(--primary);
+    }
+
+    .comparison-table td {
+      padding: var(--space-md) var(--space-lg);
+      border-bottom: 1px solid var(--outline-subtle);
+      font-size: 0.875rem;
+      color: var(--on-surface);
+      vertical-align: middle;
+    }
+
+    .comparison-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .comparison-table td.highlight-cell {
+      background: rgba(212, 175, 55, 0.04);
+      font-weight: 600;
+      color: var(--on-surface);
+    }
+
+    .metric-title {
+      font-weight: 700;
+      color: var(--on-surface);
+      display: block;
+    }
+
+    .metric-sub {
+      font-size: 0.75rem;
+      color: var(--on-surface-muted);
+      margin-top: 2px;
+    }
+
+    .badge-diff-good {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: var(--font-label);
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--positive);
+      background: var(--positive-container);
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+    }
+
+    .badge-diff-bad {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-family: var(--font-label);
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--error);
+      background: var(--error-container);
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+    }
+
+    /* -------------------------------------------------------------
+       CRM & FUNNEL VISUALIZER
+       ------------------------------------------------------------- */
+    .funnel-container {
+      background: var(--surface-card);
+      border: 1px solid var(--outline);
+      border-radius: var(--radius-xl);
+      padding: var(--space-2xl);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+    }
+
+    .workflow-steps-strip {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: var(--space-md);
+      position: relative;
+      margin-bottom: var(--space-2xl);
+    }
+
+    .workflow-step-card {
+      background: var(--surface-container-low);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      position: relative;
+      cursor: pointer;
+      transition: all var(--dur-short) var(--ease-out);
+    }
+
+    .workflow-step-card:hover {
+      border-color: var(--primary);
+    }
+
+    .workflow-step-card.active {
+      border-color: var(--primary);
+      background: var(--surface-container);
+      box-shadow: 0 0 16px rgba(212, 175, 55, 0.15);
+    }
+
+    .step-index-badge {
+      font-family: var(--font-label);
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .step-card-title {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--on-surface);
+      line-height: 1.3;
+    }
+
+    .step-card-desc {
+      font-size: 0.72rem;
+      color: var(--on-surface-muted);
+      line-height: 1.4;
+    }
+
+    /* Interactive CRM Preview Window */
+    .crm-preview-box {
+      background: var(--surface-well);
+      border: 1px solid var(--outline);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .crm-preview-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--surface-container-high);
+      padding: var(--space-sm) var(--space-md);
+      border-bottom: 1px solid var(--outline-variant);
+    }
+
+    .crm-tab-buttons {
+      display: flex;
+      gap: var(--space-xs);
+    }
+
+    .crm-tab-btn {
+      font-family: var(--font-label);
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      color: var(--on-surface-variant);
+      background: var(--surface-container);
+      transition: all var(--dur-short) var(--ease-out);
+    }
+
+    .crm-tab-btn.active {
+      background: var(--primary);
+      color: var(--on-primary);
+    }
+
+    .crm-card-content {
+      padding: var(--space-lg);
+    }
+
+    .crm-fields-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+
+    .crm-field-block {
+      background: var(--surface-container);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--radius-sm);
+      padding: var(--space-sm) var(--space-md);
+    }
+
+    .crm-field-name {
+      font-family: var(--font-label);
+      font-size: 0.7rem;
+      color: var(--on-surface-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .crm-field-value {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--on-surface);
+      margin-top: 2px;
+    }
+
+    .crm-field-value.gold {
+      color: var(--primary);
+      font-family: var(--font-label);
+    }
+
+    .crm-transcript-attach {
+      background: var(--surface-container-low);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--radius-sm);
+      padding: var(--space-md);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+    }
+
+    /* -------------------------------------------------------------
+       SECTION 5: CONTACTS & ARCHITECT BLOCK
+       ------------------------------------------------------------- */
+    .contact-card-layout {
+      background: var(--surface-card);
+      border: 1px solid var(--outline);
+      border-radius: var(--radius-xl);
+      padding: var(--space-2xl);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: var(--space-2xl);
+      align-items: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .contact-card-layout::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.12), transparent 70%);
+      pointer-events: none;
+    }
+
+    .architect-info-col {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .architect-avatar-badge {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+    }
+
+    .avatar-bird-emblem {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--surface-well);
+      border: 2px solid var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.25);
+    }
+
+    .architect-name {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--on-surface);
+    }
+
+    .architect-role {
+      font-family: var(--font-label);
+      font-size: 0.78rem;
+      color: var(--primary);
+      letter-spacing: 0.04em;
+    }
+
+    .architect-quote {
+      font-size: 0.9375rem;
+      color: var(--on-surface-variant);
+      border-left: 2px solid var(--primary);
+      padding-left: var(--space-md);
+      font-style: italic;
+      line-height: 1.5;
+    }
+
+    .contact-details-grid {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+      margin-top: var(--space-xs);
+    }
+
+    .contact-item-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface-container-high);
+      border: 1px solid var(--outline-variant);
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--radius-md);
+    }
+
+    .contact-item-left {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      font-size: 0.875rem;
+    }
+
+    .btn-copy-sm {
+      font-family: var(--font-label);
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--primary);
+      background: var(--primary-container);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      transition: all var(--dur-short) var(--ease-out);
+    }
+
+    .btn-copy-sm:hover {
+      background: var(--primary);
+      color: var(--on-primary);
+    }
+
+    /* Right Action Panel of Contacts */
+    .contact-cta-panel {
+      background: var(--surface-well);
+      border: 1px solid var(--outline);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+      text-align: center;
+    }
+
+    .cta-panel-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--on-surface);
+    }
+
+    .cta-panel-desc {
+      font-size: 0.875rem;
+      color: var(--on-surface-variant);
+      line-height: 1.5;
+    }
+
+    .qr-handle-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-md);
+      background: var(--surface-container-high);
+      border: 1px dashed var(--outline);
+      border-radius: var(--radius-md);
+    }
+
+    .handle-display {
+      font-family: var(--font-label);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    /* -------------------------------------------------------------
+       SECTION 6: FAQ ACCORDION
+       ------------------------------------------------------------- */
+    .faq-list {
+      max-width: 820px;
+      margin-left: auto;
+      margin-right: auto;
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .faq-item {
+      background: var(--surface-card);
+      border: 1px solid var(--outline-variant);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      transition: border-color var(--dur-short) var(--ease-out);
+    }
+
+    .faq-item:hover {
+      border-color: var(--outline);
+    }
+
+    .faq-question-btn {
+      width: 100%;
+      text-align: left;
+      padding: var(--space-md) var(--space-lg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-md);
+      font-size: 0.9375rem;
+      font-weight: 700;
+      color: var(--on-surface);
+      background: transparent;
+    }
+
+    .faq-icon-chevron {
+      color: var(--primary);
+      transition: transform var(--dur-short) var(--ease-out);
+    }
+
+    .faq-item.open .faq-icon-chevron {
+      transform: rotate(180deg);
+    }
+
+    .faq-answer {
+      display: none;
+      padding: 0 var(--space-lg) var(--space-md) var(--space-lg);
+      font-size: 0.875rem;
+      line-height: 1.6;
+      color: var(--on-surface-variant);
+      border-top: 1px solid var(--outline-subtle);
+      margin-top: 4px;
+      padding-top: var(--space-sm);
+    }
+
+    .faq-item.open .faq-answer {
+      display: block;
+    }
+
+    /* -------------------------------------------------------------
+       FOOTER
+       ------------------------------------------------------------- */
+    .site-footer {
+      border-top: 1px solid var(--outline-variant);
+      background: var(--surface-well);
+      padding-top: var(--space-2xl);
+      padding-bottom: var(--space-2xl);
+      color: var(--on-surface-muted);
+      font-size: 0.8125rem;
+    }
+
+    .footer-layout {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--space-md);
+    }
+
+    /* -------------------------------------------------------------
+       MODALS & TOAST NOTIFICATION
+       ------------------------------------------------------------- */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-md);
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-dialog {
+      background: var(--surface-card);
+      border: 1px solid var(--outline);
+      border-radius: var(--radius-xl);
+      max-width: 520px;
+      width: 100%;
+      padding: var(--space-xl);
+      position: relative;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6), 0 0 30px rgba(212, 175, 55, 0.15);
+    }
+
+    .modal-close-btn {
+      position: absolute;
+      top: var(--space-md);
+      right: var(--space-md);
+      color: var(--on-surface-muted);
+      padding: 4px;
+      border-radius: 50%;
+    }
+
+    .modal-close-btn:hover {
+      color: var(--on-surface);
+      background: var(--surface-container-high);
+    }
+
+    .modal-title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: var(--on-surface);
+      margin-bottom: var(--space-xs);
+    }
+
+    .modal-sub {
+      font-size: 0.875rem;
+      color: var(--on-surface-variant);
+      margin-bottom: var(--space-lg);
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: var(--space-md);
+    }
+
+    .form-label {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--on-surface);
+    }
+
+    .form-input, .form-select {
+      background: var(--surface-well);
+      border: 1px solid var(--outline);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      color: var(--on-surface);
+      outline: none;
+      transition: border-color var(--dur-short) var(--ease-out);
+    }
+
+    .form-input:focus, .form-select:focus {
+      border-color: var(--primary);
+    }
+
+    .toast-pill {
+      position: fixed;
+      bottom: var(--space-xl);
+      right: var(--space-xl);
+      background: var(--surface-container-highest);
+      color: var(--on-surface);
+      border: 1px solid var(--primary);
+      padding: var(--space-sm) var(--space-lg);
+      border-radius: var(--radius-full);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 16px rgba(212, 175, 55, 0.25);
+      font-family: var(--font-label);
+      font-size: 0.8125rem;
+      font-weight: 600;
+      display: none;
+      align-items: center;
+      gap: var(--space-sm);
+      z-index: 120;
+    }
+
+    .toast-pill.show {
+      display: inline-flex;
+      animation: fadeInToast 0.2s ease-out forwards;
+    }
+
+    @keyframes fadeInToast {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* -------------------------------------------------------------
+       RESPONSIVE BREAKPOINTS
+       ------------------------------------------------------------- */
+    @media (max-width: 992px) {
+      .hero-layout, .player-body-grid, .calc-grid, .contact-card-layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .player-console-pane {
+        border-right: none;
+        border-bottom: 1px solid var(--outline-variant);
+      }
+      .case-tabs-bar {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .case-tab-btn {
+        border-right: none;
+        border-bottom: 1px solid var(--outline-variant);
+      }
+      .workflow-steps-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .crm-fields-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px) {
+      .app-container {
+        padding-left: var(--space-md);
+        padding-right: var(--space-md);
+      }
+      .nav-links {
+        display: none;
+      }
+      .hero-kpi-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .crm-fields-grid {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .workflow-steps-strip {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .btn-controls-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+  </style>
 </head>
 <body>
-<article class="card">
-<img src="./logo-govorun.png" alt="Govorun AI">
-<h1>Полный BFL-лендинг ещё не залит</h1>
-<p>Файл ~145&nbsp;KB. Загрузите <code>bfl-landing.html</code> через GitHub Upload, перезаписав этот файл.</p>
-<p><a href="https://github.com/ynkozlova-cpu/govorun-ai/upload/main">Загрузить на main</a> · <a href="./demos/">Демо-звонки</a></p>
-</article>
+<audio id="real-demo-audio" preload="metadata" crossorigin="anonymous"></audio>
+
+  <!-- ============================================================
+       HEADER & NAVIGATION BAR
+       ============================================================ -->
+  <header class="site-header">
+    <div class="app-container">
+      <nav class="header-nav" aria-label="Основная навигация">
+        <div class="brand-block">
+          <div class="brand-logo-wrap">
+            <img class="logo-bird-icon" src="https://cdn.jsdelivr.net/gh/ynkozlova-cpu/govorun-ai@main/logo-govorun.png" width="40" height="40" alt="Govorun AI" style="object-fit:contain;border-radius:4px">
+            <div>
+              <div class="brand-name">ГОВОРУН <span>AI</span></div>
+              <div class="brand-tagline">Общается. Анализирует. Обучает.</div>
+            </div>
+          </div>
+          <span class="brand-domain-tag">[ ГОЛОСОВОЙ ИИ ДЛЯ БФЛ ]</span>
+        </div>
+
+        <ul class="nav-links">
+          <li><a class="nav-link-item" href="#demo-player">Демо робота</a></li>
+          <li><a class="nav-link-item" href="#roi-calc">Калькулятор ROI</a></li>
+          <li><a class="nav-link-item" href="#comparison">Сравнение КЦ</a></li>
+          <li><a class="nav-link-item" href="#funnel-crm">Воронка 127-ФЗ</a></li>
+          <li><a class="nav-link-item" href="#contacts">Контакты</a></li>
+        </ul>
+
+        <div class="header-cta-group">
+          <button class="btn-gold" onclick="openPilotModal()">Запустить пилот</button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ============================================================
+       SECTION 1: HERO SECTION
+       ============================================================ -->
+  <main>
+    <section class="hero-section">
+      <div class="app-container">
+        <div class="hero-layout">
+          <div class="hero-content">
+            <div>
+              <span class="badge-gold">
+                <i data-lucide="sparkles" style="width: 14px; height: 14px;"></i>
+                Пилот на вашем сценарии
+              </span>
+            </div>
+
+            <h1 class="hero-title">
+              Говорун AI: Автоматическая <span class="hero-title-highlight">квалификация лидов</span> и первичный обзвон для БФЛ
+            </h1>
+
+            <p class="hero-subtitle">
+              Цифровой сотрудник мгновенно опрашивает заявителей по 127-ФЗ, выявляет сумму долга (&gt;300 тыс. руб.), просрочки и имущество, передавая юристам готовые сделки в CRM за 3 секунды.
+            </p>
+
+            <div class="hero-actions">
+              <button class="btn-gold" onclick="openPilotModal()">
+                <i data-lucide="play-circle" style="width: 18px; height: 18px;"></i>
+                Запустить пилот
+              </button>
+              <button class="btn-tg-accent" onclick="openTelegramModal()">
+                <i data-lucide="send" style="width: 18px; height: 18px;"></i>
+                📱 Перейти в Telegram-бот (@ynkozlova)
+              </button>
+            </div>
+
+            <div class="hero-kpi-grid">
+              <div class="kpi-card">
+                <div class="kpi-card-val mono-num">3 сек.</div>
+                <div class="kpi-card-label">Скорость первого звонка после заявки</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-card-val mono-num">92%</div>
+                <div class="kpi-card-label">Дозвон с каскадным автодозвоном</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-card-val mono-num">100%</div>
+                <div class="kpi-card-label">Соблюдение скрипта квалификации 127-ФЗ</div>
+              </div>
+              <div class="kpi-card">
+                <div class="kpi-card-val mono-num">от 12 ₽</div>
+                <div class="kpi-card-label">Стоимость минуты (в 7 раз выгоднее КЦ)</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hero Visual HUD Telephony Mockup -->
+          <div class="hero-visual-card">
+            <div class="hud-header">
+              <div class="hud-status-badge">
+                <span class="hud-pulse-dot"></span>
+                <span>АКТИВНЫЙ ВЫЗОВ: ЛИНИЯ #1</span>
+              </div>
+              <span class="badge-tag">SIP-TRUNK 127-FZ</span>
+            </div>
+
+            <div class="hero-lead-preview">
+              <div class="lead-meta-row">
+                <span>Абонент:</span>
+                <span class="lead-meta-val">Юлия Николаевна (+7 913 215-97-66)</span>
+              </div>
+              <div class="lead-meta-row">
+                <span>Город:</span>
+                <span class="lead-meta-val">Новосибирск (МСК+4)</span>
+              </div>
+              <div class="lead-meta-row">
+                <span>Сумма долга:</span>
+                <span class="lead-meta-val mono-num" style="color: var(--primary);">2 500 000 ₽</span>
+              </div>
+
+              <div style="margin-top: 10px; font-size: 0.75rem; color: var(--on-surface-muted);">
+                Чек-лист квалификации по 127-ФЗ:
+              </div>
+
+              <ul class="qualify-checklist">
+                <li class="qualify-item">
+                  <span>1. Выявление боли (коллекторы, просрочка 5 мес.)</span>
+                  <span class="qualify-item-check"><i data-lucide="check" style="width: 14px; height: 14px;"></i> ОК</span>
+                </li>
+                <li class="qualify-item">
+                  <span>2. Сумма долга &gt; 300 000 ₽</span>
+                  <span class="qualify-item-check"><i data-lucide="check" style="width: 14px; height: 14px;"></i> ОК</span>
+                </li>
+                <li class="qualify-item">
+                  <span>3. Судебные иски / приставы (пока только звонки)</span>
+                  <span class="qualify-item-check"><i data-lucide="check" style="width: 14px; height: 14px;"></i> ОК</span>
+                </li>
+                <li class="qualify-item">
+                  <span>4. Проверка залогов (ипотека, авто)</span>
+                  <span class="qualify-item-check"><i data-lucide="check" style="width: 14px; height: 14px;"></i> БЕЗ ЗАЛОГА</span>
+                </li>
+                <li class="qualify-item">
+                  <span>5. Доход и семейное положение (100k, 2 детей)</span>
+                  <span class="qualify-item-check"><i data-lucide="check" style="width: 14px; height: 14px;"></i> ОК</span>
+                </li>
+                <li class="qualify-item">
+                  <span>6. Согласие на консультацию юриста</span>
+                  <span class="qualify-item-check"><i data-lucide="check" style="width: 14px; height: 14px;"></i> 12:00 СЕГОДНЯ</span>
+                </li>
+              </ul>
+
+              <div style="background: var(--surface-well); border: 1px solid var(--outline-variant); border-radius: var(--radius-sm); padding: 8px 12px; font-family: var(--font-label); font-size: 0.72rem; color: var(--on-surface-variant); display: flex; justify-content: space-between; align-items: center;">
+                <span>Интеграция CRM:</span>
+                <span style="color: var(--positive);">Сделка создана за 2.8 сек.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 2: INTERACTIVE AUDIO PLAYER & TRANSCRIPT
+         ============================================================ -->
+    <section id="demo-player" data-note="real-wav" class="content-section">
+      <div class="app-container">
+        <div class="section-header-block">
+          <div class="section-eyebrow">Живое тестирование ИИ</div>
+          <h2 class="section-heading">Послушать робота: реальные диалоги квалификации БФЛ</h2>
+          <p class="section-lead">
+            Оцените естественность интонаций, скорость реакций и точность сбора данных цифрового юриста Светланы на базе реальных транскриптов звонков.
+          </p>
+        </div>
+
+        <div class="player-card">
+          <!-- Case Tabs -->
+          <div class="case-tabs-bar" role="tablist">
+            <button class="case-tab-btn active" id="case-tab-0" onclick="switchCase(0)" role="tab" aria-selected="true">
+              <div class="tab-case-number">Кейс #1 • Квалификация</div>
+              <div class="tab-case-title">Долг 2.5 млн ₽ по 127-ФЗ</div>
+              <div class="tab-case-meta">Новосибирск • Коллекторы 5 мес. • Без залогов</div>
+            </button>
+            <button class="case-tab-btn" id="case-tab-1" onclick="switchCase(1)" role="tab" aria-selected="false">
+              <div class="tab-case-number">Кейс #2 • Отработка возражений</div>
+              <div class="tab-case-title">«Это не мошенничество?»</div>
+              <div class="tab-case-meta">Сомнения клиента • 1500+ дел • Мой Арбитр</div>
+            </button>
+            <button class="case-tab-btn" id="case-tab-2" onclick="switchCase(2)" role="tab" aria-selected="false">
+              <div class="tab-case-number">Кейс #3 • Защита активов</div>
+              <div class="tab-case-title">Сохранение авто при долге 870k</div>
+              <div class="tab-case-meta">Пермь • Ст. 446 ГПК • СПИН-диалог и конфиденциальность</div>
+            </button>
+          </div>
+
+          <!-- Player Console & Synchronized Transcript Grid -->
+          <div class="player-body-grid">
+            <!-- Left Console Pane -->
+            <div class="player-console-pane">
+              <div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                  <span class="badge-tag" id="current-case-badge">КЕЙС 1: КВАЛИФИКАЦИЯ 127-ФЗ</span>
+                  <div class="sound-active-status" id="player-active-state">
+                    <i data-lucide="radio" style="width: 14px; height: 14px;"></i>
+                    <span id="player-status-text">Готов к воспроизведению</span>
+                  </div>
+                </div>
+
+                <!-- Animated Waveform Canvas Visualizer -->
+                <div class="audio-waveform-container">
+                  <canvas id="waveform-canvas" class="waveform-canvas" width="460" height="110"></canvas>
+                  <div class="waveform-meta">
+                    <span>Частота: 8.0 kHz (G.711 Telephony)</span>
+                    <span class="mono-num" id="live-hz-indicator">DSP: Active</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Controls Strip -->
+              <div class="player-controls-strip">
+                <div class="scrub-timeline-wrap">
+                  <input type="range" class="scrub-slider" id="audio-progress" min="0" max="105" value="0" step="0.5" oninput="onScrubInput(this.value)">
+                  <div class="time-readout-row">
+                    <span class="mono-num" id="time-current">00:00</span>
+                    <span class="mono-num" id="time-total">01:45</span>
+                  </div>
+                </div>
+
+                <div class="btn-controls-row">
+                  <div class="primary-audio-actions">
+                    <button class="btn-audio-step" onclick="jumpAudio(-5)" aria-label="Назад на 5 секунд">
+                      <i data-lucide="rotate-ccw" style="width: 16px; height: 16px;"></i>
+                    </button>
+
+                    <button class="btn-play-pause" id="btn-master-play" onclick="togglePlayPause()" aria-label="Воспроизвести / Пауза">
+                      <i data-lucide="play" id="play-pause-icon" style="width: 24px; height: 24px;"></i>
+                    </button>
+
+                    <button class="btn-audio-step" onclick="jumpAudio(5)" aria-label="Вперед на 5 секунд">
+                      <i data-lucide="rotate-cw" style="width: 16px; height: 16px;"></i>
+                    </button>
+                  </div>
+
+                  <div class="aux-controls-group">
+                    <button class="speed-toggle-btn active" id="speed-1x" onclick="setPlaySpeed(1.0)">1.0x</button>
+                    <button class="speed-toggle-btn" id="speed-125x" onclick="setPlaySpeed(1.25)">1.25x</button>
+                    <button class="speed-toggle-btn" id="speed-15x" onclick="setPlaySpeed(1.5)">1.5x</button>
+
+                    <button class="mute-btn" id="btn-audio-mute" onclick="toggleMuteAudio()" aria-label="Включить / Выключить звук">
+                      <i data-lucide="volume-2" id="mute-icon" style="width: 18px; height: 18px;"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Case Quick Summary -->
+              <div style="background: var(--surface-container-high); border: 1px solid var(--outline-variant); border-radius: var(--radius-md); padding: var(--space-md);">
+                <div style="font-family: var(--font-label); font-size: 0.72rem; color: var(--primary); font-weight: 700; text-transform: uppercase;">
+                  Результат в CRM:
+                </div>
+                <div id="case-summary-text" style="font-size: 0.8125rem; color: var(--on-surface-variant); margin-top: 4px; line-height: 1.4;">
+                  Лид полностью квалифицирован. Долг 2.5 млн руб. Залогов нет. Назначен созвон со старшим юристом на 12:00.
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Interactive Transcript Pane -->
+            <div class="transcript-pane" id="transcript-scroll-box">
+              <div class="transcript-header-info">
+                <span class="transcript-title">Синхронная стенограмма звонка</span>
+                <span class="transcript-hint">Кликните на реплику для перемотки</span>
+              </div>
+
+              <div class="transcript-dialog-list" id="transcript-container">
+                <!-- Dynamically populated by JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 3: INTERACTIVE ROI & ORDER CALCULATOR
+         ============================================================ -->
+    <section id="roi-calc" class="content-section">
+      <div class="app-container">
+        <div class="section-header-block">
+          <div class="section-eyebrow">Экономика внедрения</div>
+          <h2 class="section-heading">Интерактивный калькулятор окупаемости Говорун AI</h2>
+        <p class="section-lead" style="margin-top:8px;color:#A0A0A0;font-size:0.9rem">Ориентировочная модель для обсуждения. Не является гарантией результата. Итоговые цифры — только после разбора вашего потока.</p>
+          <p class="section-lead">
+            Рассчитайте потери рекламного бюджета из-за задержки ответа живого колл-центра и экономию при мгновенном перезвоне за 3 секунды.
+          </p>
+        </div>
+
+        <div class="calculator-wrapper">
+          <div class="calc-grid">
+            <!-- Inputs Column -->
+            <div class="calc-inputs-pane">
+              <!-- Slider 1: Leads -->
+              <div class="slider-group">
+                <div class="slider-header-row">
+                  <label class="slider-label" for="input-leads">Входящих лидов по БФЛ в месяц:</label>
+                  <div class="slider-val-box mono-num" id="disp-leads">1 000 лидов</div>
+                </div>
+                <input type="range" class="range-input" id="input-leads" min="100" max="5000" step="50" value="1000" oninput="onLeadsChange(this.value)">
+                <div class="slider-sub-hint">
+                  <span>100 лидов</span>
+                  <span>2 500 лидов</span>
+                  <span>5 000 лидов</span>
+                </div>
+              </div>
+
+              <!-- Slider 2: CPL -->
+              <div class="slider-group">
+                <div class="slider-header-row">
+                  <label class="slider-label" for="input-cpl">Средняя стоимость лида (CPL):</label>
+                  <div class="slider-val-box mono-num" id="disp-cpl">1 600 ₽</div>
+                </div>
+                <input type="range" class="range-input" id="input-cpl" min="500" max="4000" step="50" value="1600" oninput="onCplChange(this.value)">
+                <div class="slider-sub-hint">
+                  <span>500 ₽</span>
+                  <span>2 000 ₽</span>
+                  <span>4 000 ₽</span>
+                </div>
+              </div>
+
+              <!-- Slider 3: Speed of current call center -->
+              <div class="slider-group">
+                <div class="slider-header-row">
+                  <label class="slider-label" for="input-speed">Время первого ответа вашего КЦ (мин):</label>
+                  <div class="slider-val-box mono-num" id="disp-speed">20 минут</div>
+                </div>
+                <input type="range" class="range-input" id="input-speed" min="1" max="60" step="1" value="20" oninput="onSpeedChange(this.value)">
+                <div class="slider-sub-hint">
+                  <span>1 минута</span>
+                  <span>20 минут</span>
+                  <span>60 минут</span>
+                </div>
+              </div>
+
+              <!-- Operator Staff Count Indicator -->
+              <div style="background: var(--surface-container-high); border: 1px solid var(--outline-variant); border-radius: var(--radius-md); padding: var(--space-md); display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <div style="font-size: 0.875rem; font-weight: 700; color: var(--on-surface);">Текущий штат операторов для этого объема:</div>
+                  <div style="font-size: 0.75rem; color: var(--on-surface-muted);">При норме ~350 лидов на 1 оператора в месяц</div>
+                </div>
+                <div class="mono-num" id="disp-operators" style="font-size: 1.25rem; font-weight: 800; color: var(--tertiary);">3 оператора</div>
+              </div>
+            </div>
+
+            <!-- Results Column -->
+            <div class="calc-results-pane">
+              <div class="calc-hero-stat">
+                <div class="calc-hero-label">Чистая ежемесячная выгода:</div>
+                <div class="calc-hero-number mono-num" id="calc-net-profit" style="color: var(--primary);">+665 000 ₽</div>
+                <div class="calc-hero-sub" id="calc-roi-multiplier">Ориентир модели (не гарантия): <span class="mono-num" style="color: var(--positive); font-weight: 700;">880% ROI</span></div>
+              </div>
+
+              <div class="calc-stat-breakdown">
+                <div class="breakdown-row">
+                  <span class="breakdown-label">
+                    <i data-lucide="flame" style="width: 14px; height: 14px; color: var(--error);"></i>
+                    Сгорает бюджета сейчас (задержка):
+                  </span>
+                  <span class="breakdown-val loss mono-num" id="calc-lost-budget">-512 000 ₽</span>
+                </div>
+
+                <div class="breakdown-row">
+                  <span class="breakdown-label">
+                    <i data-lucide="shield-check" style="width: 14px; height: 14px; color: var(--positive);"></i>
+                    Спасенные целевые лиды в месяц:
+                  </span>
+                  <span class="breakdown-val gain mono-num" id="calc-saved-leads">+280 лидов</span>
+                </div>
+
+                <div class="breakdown-row">
+                  <span class="breakdown-label">
+                    <i data-lucide="users" style="width: 14px; height: 14px; color: var(--on-surface-muted);"></i>
+                    Затраты на живых операторов (ФОТ+налоги):
+                  </span>
+                  <span class="breakdown-val mono-num" id="calc-human-cost">225 000 ₽</span>
+                </div>
+
+                <div class="breakdown-row">
+                  <span class="breakdown-label">
+                    <i data-lucide="bot" style="width: 14px; height: 14px; color: var(--primary);"></i>
+                    Стоимость Говорун AI (30 ₽/диалог):
+                  </span>
+                  <span class="breakdown-val mono-num" id="calc-robot-cost" style="color: var(--primary);">30 000 ₽</span>
+                </div>
+              </div>
+
+              <!-- Action Card Inside Results -->
+              <div class="order-summary-box">
+                <div class="order-summary-title" id="order-pack-title">Рекомендуемый пакет: 1 000 лидов / месяц</div>
+                <div class="order-summary-desc" id="order-pack-desc">
+                  Полная автоматизация первого контакта за 3 секунды, интеграция с amoCRM/Bitrix24 и пилот на сценарии бесплатно.
+                </div>
+                <button class="btn-gold" style="width: 100%;" onclick="openOrderModalWithVolume()">
+                  Оформить заявку под этот объем
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 4: COMPARATIVE MATRIX & CRM FUNNEL
+         ============================================================ -->
+    <section id="comparison" class="content-section">
+      <div class="app-container">
+        <div class="section-header-block">
+          <div class="section-eyebrow">Анализ эффективности</div>
+          <h2 class="section-heading">Обычный оператор колл-центра vs Говорун AI</h2>
+          <p class="section-lead">
+            Почему компании по БФЛ переходят на голосовой ИИ: сопоставление по 7 ключевым параметрам.
+          </p>
+        </div>
+
+        <!-- Filter tabs for Matrix -->
+        <div class="compare-controls-bar">
+          <button class="filter-btn active" onclick="filterCompareRows('all', this)">Все 7 критериев</button>
+          <button class="filter-btn" onclick="filterCompareRows('speed', this)">Скорость и дозвон</button>
+          <button class="filter-btn" onclick="filterCompareRows('quality', this)">Квалификация по 127-ФЗ</button>
+          <button class="filter-btn" onclick="filterCompareRows('finance', this)">ФОТ и экономика</button>
+        </div>
+
+        <div class="comparison-table-wrap">
+          <table class="comparison-table" aria-label="Сравнение оператора и робота">
+            <thead>
+              <tr>
+                <th style="width: 28%;">Параметр оценки</th>
+                <th style="width: 33%;">Штатный оператор КЦ</th>
+                <th class="highlight-col" style="width: 39%;">Говорун AI (Голосовой робот)</th>
+              </tr>
+            </thead>
+            <tbody id="compare-table-body">
+              <tr data-cat="speed">
+                <td>
+                  <span class="metric-title">Скорость первого звонка</span>
+                  <span class="metric-sub">Время после отправки формы</span>
+                </td>
+                <td>
+                  <span style="color: var(--error); font-weight: 600;">15 – 35 минут</span>
+                  <div class="metric-sub">Лид остывает или уходит к конкурентам</div>
+                </td>
+                <td class="highlight-cell">
+                  <div class="badge-diff-good mono-num">3 секунды</div>
+                  <div class="metric-sub">Звонок идет, пока клиент еще смотрит ваш сайт</div>
+                </td>
+              </tr>
+
+              <tr data-cat="speed">
+                <td>
+                  <span class="metric-title">Дозвон с первой попытки</span>
+                  <span class="metric-sub">Конверсия в успешный контакт</span>
+                </td>
+                <td>
+                  <span style="color: var(--error); font-weight: 600;">45% – 55%</span>
+                  <div class="metric-sub">Ручные перезвоны забываются</div>
+                </td>
+                <td class="highlight-cell">
+                  <div class="badge-diff-good mono-num">82% – 92%</div>
+                  <div class="metric-sub">Умный каскад: перезвон через 10 мин, 1ч, 3ч</div>
+                </td>
+              </tr>
+
+              <tr data-cat="quality">
+                <td>
+                  <span class="metric-title">Соблюдение регламента 127-ФЗ</span>
+                  <span class="metric-sub">Сбор 8 ключевых параметров</span>
+                </td>
+                <td>
+                  <span style="color: var(--error); font-weight: 600;">60% – 70%</span>
+                  <div class="metric-sub">Операторы забывают спросить про авто или залоги</div>
+                </td>
+                <td class="highlight-cell">
+                  <div class="badge-diff-good mono-num">100% стабильно</div>
+                  <div class="metric-sub">Строгий юридический чек-лист без человеческого фактора</div>
+                </td>
+              </tr>
+
+              <tr data-cat="speed">
+                <td>
+                  <span class="metric-title">Режим работы</span>
+                  <span class="metric-sub">Доступность обработки заявок</span>
+                </td>
+                <td>
+                  <span>Пн-Пт 09:00 – 19:00</span>
+                  <div class="metric-sub">Ночные и выходные лиды сгорают к утру</div>
+                </td>
+                <td class="highlight-cell">
+                  <div class="badge-diff-good mono-num">24 / 7 / 365</div>
+                  <div class="metric-sub">Мгновенный контакт даже в 02:00 ночи и праздники</div>
+                </td>
+              </tr>
+
+              <tr data-cat="finance">
+                <td>
+                  <span class="metric-title">Стоимость одного контакта</span>
+                  <span class="metric-sub">Себестоимость квалификации</span>
+                </td>
+                <td>
+                  <span style="color: var(--error); font-weight: 600;">90 – 160 ₽</span>
+                  <div class="metric-sub">Оклад + налоги + больничные + супервайзер</div>
+                </td>
+                <td class="highlight-cell">
+                  <div class="badge-diff-good mono-num">от 12 ₽ / минута</div>
+                  <div class="metric-sub">Оплата только за полезные секунды разговора</div>
+                </td>
+              </tr>
+
+              <tr data-cat="quality">
+                <td>
+                  <span class="metric-title">Фиксация данных в CRM</span>
+                  <span class="metric-sub">amoCRM / Bitrix24</span>
+                </td>
+                <td>
+                  <span>Ручной ввод 5–15 мин</span>
+                  <div class="metric-sub">Опечатки в суммах долга, потерянные комментарии</div>
+                </td>
+                <td class="highlight-cell">
+                  <div class="badge-diff-good mono-num">Мгновенно (3 сек)</div>
+                  <div class="metric-sub">Запись звонка + стенограмма + авто-тегирование</div>
+                </td>
+              </tr>
+
+              <tr data-cat="finance">
+                <td>
+                  <span class="metric-title">Пиковые нагрузки</span>
+                  <span class="metric-sub">Масштабирование рекламных кампаний</span>
+                </td>
+                <td>
+                  <span>Очередь и сбросы</span>
+                  <div class="metric-sub">При наплыве заявок операторы не успевают звонить</div>
+                </td>
+                <td class="highlight-cell">
+                  <div class="badge-diff-good mono-num">100+ одновременных линий</div>
+                  <div class="metric-sub">Робот обзванивает хоть 500 человек в одну минуту</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Funnel and CRM Visualizer Header -->
+        <div id="funnel-crm" class="section-header-block" style="margin-top: var(--space-xl);">
+          <div class="section-eyebrow">Бесшовная интеграция</div>
+          <h2 class="section-heading">Схема воронки квалификации и интеграция с CRM</h2>
+          <p class="section-lead">
+            От рекламного клика до назначения встречи юристу: как Говорун AI связывает сайт, телефонию и вашу CRM-систему за секунды.
+          </p>
+        </div>
+
+        <!-- 5 Steps Flow -->
+        <div class="funnel-container">
+          <div class="workflow-steps-strip">
+            <div class="workflow-step-card active" onclick="activateStep(0, this)">
+              <div class="step-index-badge">ШАГ 1</div>
+              <div class="step-card-title">Заявка с сайта / рекламы</div>
+              <div class="step-card-desc">Яндекс Директ, VK, лендинг БФЛ отправляет Webhook.</div>
+            </div>
+
+            <div class="workflow-step-card" onclick="activateStep(1, this)">
+              <div class="step-index-badge">ШАГ 2</div>
+              <div class="step-card-title">Вызов за 3 секунды</div>
+              <div class="step-card-desc">Говорун AI звонит заявителю по SIP с защитой от спам-фильтров.</div>
+            </div>
+
+            <div class="workflow-step-card" onclick="activateStep(2, this)">
+              <div class="step-index-badge">ШАГ 3</div>
+              <div class="step-card-title">Опрос по 8 чекпоинтам</div>
+              <div class="step-card-desc">Сумма долга, просрочка, коллекторы, суд, имущество, доход, дети.</div>
+            </div>
+
+            <div class="workflow-step-card" onclick="activateStep(3, this)">
+              <div class="step-index-badge">ШАГ 4</div>
+              <div class="step-card-title">AI-скоринг дела</div>
+              <div class="step-card-desc">Выделение целевого статуса: Долг &gt;300k, нет залогов, риск банкротства.</div>
+            </div>
+
+            <div class="workflow-step-card" onclick="activateStep(4, this)">
+              <div class="step-index-badge">ШАГ 5</div>
+              <div class="step-card-title">Сделка в CRM и Telegram</div>
+              <div class="step-card-desc">Юристу падает готовая карточка со стенограммой и записью звонка.</div>
+            </div>
+          </div>
+
+          <!-- Live CRM Deal Card Explorer -->
+          <div class="crm-preview-box">
+            <div class="crm-preview-topbar">
+              <div style="display: flex; align-items: center; gap: var(--space-sm);">
+                <i data-lucide="layout-grid" style="width: 16px; height: 16px; color: var(--primary);"></i>
+                <span style="font-size: 0.8125rem; font-weight: 700; color: var(--on-surface);">Интерфейс CRM-системы (Результат работы робота):</span>
+              </div>
+
+              <div class="crm-tab-buttons">
+                <button class="crm-tab-btn active" id="crm-tab-amo" onclick="switchCrmPreview('amo')">amoCRM</button>
+                <button class="crm-tab-btn" id="crm-tab-b24" onclick="switchCrmPreview('b24')">Bitrix24</button>
+                <button class="crm-tab-btn" id="crm-tab-tg" onclick="switchCrmPreview('tg')">Telegram-уведомление</button>
+              </div>
+            </div>
+
+            <div class="crm-card-content" id="crm-view-amo">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border-bottom: 1px solid var(--outline-variant); padding-bottom: 10px;">
+                <div>
+                  <span class="badge-gold">ЭТАП: КВАЛИФИЦИРОВАН (ЦЕЛЕВОЙ БФЛ)</span>
+                  <span style="font-size: 1.1rem; font-weight: 800; color: var(--on-surface); margin-left: 10px;">Сделка #БФЛ-9428 • Юлия Николаевна</span>
+                </div>
+                <span class="badge-tag mono-num" style="color: var(--positive);">Создано за 2.4 сек</span>
+              </div>
+
+              <div class="crm-fields-grid">
+                <div class="crm-field-block">
+                  <div class="crm-field-name">Общая сумма долга</div>
+                  <div class="crm-field-value gold">2 500 000 ₽</div>
+                </div>
+
+                <div class="crm-field-block">
+                  <div class="crm-field-name">Срок просрочки</div>
+                  <div class="crm-field-value">5 месяцев</div>
+                </div>
+
+                <div class="crm-field-block">
+                  <div class="crm-field-name">Стадия взыскания</div>
+                  <div class="crm-field-value">Звонки коллекторов (Суда нет)</div>
+                </div>
+
+                <div class="crm-field-block">
+                  <div class="crm-field-name">Залоговые кредиты (ипотека/авто)</div>
+                  <div class="crm-field-value" style="color: var(--positive);">Нет залогов (чистые потребительские)</div>
+                </div>
+
+                <div class="crm-field-block">
+                  <div class="crm-field-name">Официальный доход</div>
+                  <div class="crm-field-value mono-num">100 000 ₽ / месяц</div>
+                </div>
+
+                <div class="crm-field-block">
+                  <div class="crm-field-name">Семейное положение / Дети</div>
+                  <div class="crm-field-value">В разводе, 2 детей (8 и 16 лет)</div>
+                </div>
+              </div>
+
+              <div class="crm-transcript-attach">
+                <div style="display: flex; align-items: center; gap: var(--space-md);">
+                  <i data-lucide="file-audio" style="width: 24px; height: 24px; color: var(--primary);"></i>
+                  <div>
+                    <div style="font-size: 0.8125rem; font-weight: 700; color: var(--on-surface);">Аудиозапись звонка: govorun_call_9428.mp3 (1:45)</div>
+                    <div style="font-size: 0.72rem; color: var(--on-surface-muted);">Стенограмма диалога распознана со 100% точностью терминологии 127-ФЗ</div>
+                  </div>
+                </div>
+                <button class="btn-secondary" style="font-size: 0.75rem; padding: 4px 10px;" onclick="scrollToPlayer()">
+                  Слушать в плеере
+                </button>
+              </div>
+            </div>
+
+            <!-- Bitrix24 View -->
+            <div class="crm-card-content" id="crm-view-b24" style="display: none;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; border-bottom: 1px solid var(--outline-variant); padding-bottom: 10px;">
+                <div>
+                  <span class="badge-tag" style="background: rgba(39, 167, 231, 0.15); color: #27a7e7; border-color: #27a7e7;">BITRIX24 CRM • ЛИД #8831</span>
+                  <span style="font-size: 1.1rem; font-weight: 800; color: var(--on-surface); margin-left: 10px;">Карточка: Списание долга 127-ФЗ</span>
+                </div>
+                <span class="badge-diff-good mono-num">Ответственный: Дежурный юрист</span>
+              </div>
+
+              <div class="crm-fields-grid">
+                <div class="crm-field-block">
+                  <div class="crm-field-name">Город и часовой пояс</div>
+                  <div class="crm-field-value">г. Пермь (МСК+2)</div>
+                </div>
+                <div class="crm-field-block">
+                  <div class="crm-field-name">Сумма задолженности</div>
+                  <div class="crm-field-value gold">870 000 ₽</div>
+                </div>
+                <div class="crm-field-block">
+                  <div class="crm-field-name">Имущество клиента</div>
+                  <div class="crm-field-value">Автомобиль + 1 жилье (ст. 446 ГПК)</div>
+                </div>
+              </div>
+
+              <div style="background: var(--surface-container); border: 1px solid var(--outline-variant); border-radius: var(--radius-sm); padding: var(--space-md); font-size: 0.8125rem;">
+                <span style="color: var(--primary); font-weight: 700;">План юриста:</span> Подготовить ходатайство о сохранении транспортного средства для семьи с двумя несовершеннолетними детьми. Провести консультацию сегодня.
+              </div>
+            </div>
+
+            <!-- Telegram Notification View -->
+            <div class="crm-card-content" id="crm-view-tg" style="display: none;">
+              <div style="background: var(--surface-container-high); border: 1px solid rgba(39, 167, 231, 0.4); border-radius: var(--radius-md); padding: var(--space-md); max-width: 620px; margin-left: auto; margin-right: auto;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                  <i data-lucide="send" style="width: 16px; height: 16px; color: #27a7e7;"></i>
+                  <span style="font-weight: 700; color: #ffffff; font-size: 0.875rem;">Говорун AI Bot | Горячий лид БФЛ</span>
+                </div>
+                <div style="font-size: 0.8125rem; line-height: 1.6; color: var(--on-surface);">
+                  🔔 <b>НОВЫЙ КВАЛИФИЦИРОВАННЫЙ ЛИД:</b><br>
+                  👤 <b>Клиент:</b> Юлия (+7 913 215-97-66), Новосибирск<br>
+                  💰 <b>Сумма долга:</b> 2 500 000 ₽ (просрочка 5 мес.)<br>
+                  🛡 <b>Залоги:</b> Нет (потребительские кредиты)<br>
+                  💼 <b>Доход:</b> 100 000 ₽ (официальный)<br>
+                  👨‍👩‍👧 <b>Семья:</b> 2 детей (8 и 16 лет), в разводе<br>
+                  ⏰ <b>Назначена встреча с юристом:</b> Сегодня в 12:00 дня<br>
+                  🔗 <i>Сделка в amoCRM уже создана со стенограммой.</i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 5: CONTACTS & ARCHITECT BLOCK
+         ============================================================ -->
+    <section id="contacts" class="content-section">
+      <div class="app-container">
+        <div class="section-header-block">
+          <div class="section-eyebrow">Прямая связь и интеграция</div>
+          <h2 class="section-heading">Запустите пилотный проект Говорун AI для вашей компании</h2>
+          <p class="section-lead">
+            Обсудите сценарий квалификации под регламент вашей компании с главным архитектором голосовых решений.
+          </p>
+        </div>
+
+        <div class="contact-card-layout">
+          <!-- Architect Info -->
+          <div class="architect-info-col">
+            <div class="architect-avatar-badge">
+              <div class="avatar-bird-emblem">
+                <svg width="34" height="34" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M6 22L16 6L23 16L34 11L28 26L36 30L22 34L17 25L10 29L6 22Z" fill="#D4AF37" />
+                </svg>
+              </div>
+              <div>
+                <div class="architect-name">Юлия Козлова</div>
+                <div class="architect-role">Архитектор голосовых ИИ-систем Говорун AI</div>
+              </div>
+            </div>
+
+            <div class="architect-quote">
+              «В БФЛ критична каждая секунда. Если вы перезваниваете через 20 минут, лид уже нашел другую юридическую фирму. Говорун AI поднимает трубку за 3 секунды, задает точные вопросы по 127-ФЗ и передает юристам только тех, у кого реально списываемый долг.»
+            </div>
+
+            <div class="contact-details-grid">
+              <div class="contact-item-row">
+                <div class="contact-item-left">
+                  <i data-lucide="phone" style="width: 16px; height: 16px; color: var(--primary);"></i>
+                  <span>Телефон / WhatsApp: <b>+7 (913) 215-97-66</b></span>
+                </div>
+                <button class="btn-copy-sm" onclick="copyContactText('+79132159766', 'Телефон +7 (913) 215-97-66')">
+                  Копировать
+                </button>
+              </div>
+
+              <div class="contact-item-row">
+                <div class="contact-item-left">
+                  <i data-lucide="send" style="width: 16px; height: 16px; color: #27a7e7;"></i>
+                  <span>Telegram-контакт: <b>@ynkozlova</b></span>
+                </div>
+                <button class="btn-copy-sm" onclick="copyContactText('@ynkozlova', 'Telegram @ynkozlova')">
+                  Копировать
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Direct Telegram Panel -->
+          <div class="contact-cta-panel">
+            <div>
+              <span class="badge-gold">БЕСПЛАТНЫЙ ТЕСТОВЫЙ ПИЛОТ</span>
+            </div>
+
+            <h3 class="cta-panel-title">Готовы протестировать робота на ваших лидах?</h3>
+
+            <p class="cta-panel-desc">
+              Мы настроим сценарий под ваш регион, подключим сценарий и покажем квалификацию на ваших вводных.
+            </p>
+
+            <div class="qr-handle-wrap">
+              <div style="font-size: 0.75rem; color: var(--on-surface-muted);">Прямой Telegram-аккаунт архитектора:</div>
+              <div class="handle-display mono-num">@ynkozlova</div>
+              <div style="font-size: 0.72rem; color: var(--on-surface-variant);">Напишите кодовое слово: <b>«ПИЛОТ БФЛ»</b></div>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: var(--space-sm);">
+              <button class="btn-tg-accent" style="width: 100%;" onclick="openTelegramModal()">
+                <i data-lucide="send" style="width: 18px; height: 18px;"></i>
+                🚀 Перейти в Telegram-бот (@ynkozlova)
+              </button>
+              <button class="btn-secondary" style="width: 100%;" onclick="openPilotModal()">
+                Заказать индивидуальный аудит воронки
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         SECTION 6: FAQ ACCORDION
+         ============================================================ -->
+    <section class="content-section">
+      <div class="app-container">
+        <div class="section-header-block">
+          <div class="section-eyebrow">Часто задаваемые вопросы</div>
+          <h2 class="section-heading">Технические детали и законность</h2>
+          <p class="section-lead">
+            Ответы на главные вопросы руководителей юридических фирм по БФЛ перед интеграцией.
+          </p>
+        </div>
+
+        <div class="faq-list">
+          <div class="faq-item">
+            <button class="faq-question-btn" onclick="toggleFaq(this)">
+              <span>Как робот понимает сбивчивые ответы клиентов и сложные суммы?</span>
+              <i data-lucide="chevron-down" class="faq-icon-chevron" style="width: 18px; height: 18px;"></i>
+            </button>
+            <div class="faq-answer">
+              В основе Говорун AI лежит специализированная модель NLU, обученная на более чем 100 000 реальных диалогов по списанию долгов. Робот легко распознает разговорные формулировки («ну где-то полтора ляма», «три сотки в Сбере и микрозаймы», «машина на жене») и математически точно конвертирует их в структурированные числовые поля CRM.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question-btn" onclick="toggleFaq(this)">
+              <span>Распознает ли робот автоответчики операторов и голосовую почту?</span>
+              <i data-lucide="chevron-down" class="faq-icon-chevron" style="width: 18px; height: 18px;"></i>
+            </button>
+            <div class="faq-answer">
+              Да. Встроенная система AMD (Answering Machine Detection) определяет голосовых помощников («Олег», «Алиса», автоответчик МТС/Билайн/МегаФон) за первые 400 миллисекунд и сбрасывает звонок, не расходуя платные минуты разговора. Повторный набор автоматически ставится в каскадную очередь через 15 минут.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question-btn" onclick="toggleFaq(this)">
+              <span>Соответствует ли система требованиям 152-ФЗ о персональных данных?</span>
+              <i data-lucide="chevron-down" class="faq-icon-chevron" style="width: 18px; height: 18px;"></i>
+            </button>
+            <div class="faq-answer">
+              Абсолютно. Все сервера Говорун AI расположены на территории Российской Федерации в защищенных дата-центрах уровня Tier III. Передача аудиозаписей и стенограмм в вашу amoCRM или Bitrix24 защищена сквозным SSL/TLS-шифрованием, что полностью соответствует требованиям 152-ФЗ.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question-btn" onclick="toggleFaq(this)">
+              <span>Сколько времени занимает внедрение и подключение к нашей CRM?</span>
+              <i data-lucide="chevron-down" class="faq-icon-chevron" style="width: 18px; height: 18px;"></i>
+            </button>
+            <div class="faq-answer">
+              Стандартный запуск пилотного сценария занимает от 24 до 48 часов. У нас готовы типовые модули для amoCRM и Bitrix24. Вы предоставляете доступ к воронке и SIP-аккаунту вашей телефонии, после чего цифровой сотрудник готов принимать боевой трафик.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer class="site-footer">
+    <div class="app-container">
+      <div class="footer-layout">
+        <div style="display: flex; align-items: center; gap: var(--space-sm);">
+          <div class="brand-name" style="font-size: 1rem;">ГОВОРУН <span>AI</span></div>
+          <span>• Автоматическая квалификация лидов БФЛ (127-ФЗ)</span>
+        </div>
+
+        <div>
+          Архитектор систем: <b>Юлия Козлова</b> (@ynkozlova) • +7 (913) 215-97-66
+        </div>
+
+        <div class="mono-num" style="font-size: 0.72rem;">
+          2026 Говорун AI. Все права защищены.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============================================================
+       MODAL: PILOT REQUEST
+       ============================================================ -->
+  <div class="modal-backdrop" id="modal-pilot" onclick="closeModalOnBackdrop(event, 'modal-pilot')">
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="pilot-modal-title">
+      <button class="modal-close-btn" onclick="closeModal('modal-pilot')" aria-label="Закрыть окно">
+        <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+      </button>
+
+      <div class="badge-gold" style="margin-bottom: 8px;">БЕСПЛАТНЫЙ ПИЛОТ</div>
+      <h3 class="modal-title" id="pilot-modal-title">Запрос демо / пилота</h3>
+      <p class="modal-sub">
+        Протестируйте квалификацию Говорун AI на реальных контактах вашей компании без обязательств и абонентской платы.
+      </p>
+
+      <form id="pilot-request-form" onsubmit="handlePilotSubmit(event)">
+        <div class="form-group">
+          <label class="form-label" for="form-name">Ваше имя и должность:</label>
+          <input type="text" id="form-name" class="form-input" placeholder="Александр, руководитель отдела продаж" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="form-phone">Контактный телефон для связи:</label>
+          <input type="tel" id="form-phone" class="form-input" placeholder="+7 (999) 000-00-00" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="form-crm">Ваша CRM-система:</label>
+          <select id="form-crm" class="form-select">
+            <option value="amoCRM">amoCRM</option>
+            <option value="Bitrix24">Bitrix24</option>
+            <option value="Другая">Другая / Самописная</option>
+            <option value="Нет CRM">Пока нет CRM (ведём в Excel)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="form-volume">Планируемый объем лидов в месяц:</label>
+          <input type="text" id="form-volume" class="form-input mono-num" value="1 000 лидов / месяц" readonly>
+        </div>
+
+        <button type="submit" class="btn-gold" style="width: 100%; margin-top: 10px;">
+          Отправить заявку на пилот
+        </button>
+      </form>
+
+      <div id="pilot-form-success" style="display: none; text-align: center; padding: var(--space-lg) 0;">
+        <i data-lucide="check-circle-2" style="width: 48px; height: 48px; color: var(--positive); margin: 0 auto 12px auto;"></i>
+        <h4 style="font-size: 1.15rem; font-weight: 700; color: var(--on-surface);">Заявка успешно принята!</h4>
+        <p style="font-size: 0.875rem; color: var(--on-surface-variant); margin-top: 6px;">
+          Юлия Коз (@ynkozlova) свяжется с вами в течение 15 минут в мессенджере для согласования сценария.
+        </p>
+        <button class="btn-secondary" style="margin-top: 16px;" onclick="closeModal('modal-pilot')">
+          Понятно, спасибо
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL: TELEGRAM DIRECT CONNECTOR
+       ============================================================ -->
+  <div class="modal-backdrop" id="modal-tg" onclick="closeModalOnBackdrop(event, 'modal-tg')">
+    <div class="modal-dialog" role="dialog" aria-modal="true" aria-labelledby="tg-modal-title">
+      <button class="modal-close-btn" onclick="closeModal('modal-tg')" aria-label="Закрыть окно">
+        <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+      </button>
+
+      <div class="badge-tag" style="background: rgba(39, 167, 231, 0.15); color: #27a7e7; border-color: #27a7e7; margin-bottom: 8px;">
+        ПРЯМОЙ КОНТАКТ В МЕССЕНДЖЕРЕ
+      </div>
+
+      <h3 class="modal-title" id="tg-modal-title">Связь с архитектором Говорун AI</h3>
+      <p class="modal-sub">
+        Вы можете написать напрямую в Telegram для мгновенного обсуждения задач вашего юридического центра.
+      </p>
+
+      <div style="background: var(--surface-well); border: 1px solid var(--outline); border-radius: var(--radius-md); padding: var(--space-lg); text-align: center; margin-bottom: var(--space-lg);">
+        <div style="font-size: 0.75rem; color: var(--on-surface-muted);">Имя пользователя в Telegram:</div>
+        <div class="mono-num" style="font-size: 1.5rem; font-weight: 800; color: var(--primary); margin: 6px 0;">
+          @ynkozlova
+        </div>
+        <div style="font-size: 0.8125rem; color: var(--on-surface-variant);">
+          Юлия Козлова • Главный архитектор голосовых решений
+        </div>
+
+        <div style="margin-top: 14px; display: flex; justify-content: center; gap: 8px;">
+          <button class="btn-gold" style="font-size: 0.8125rem; padding: 6px 14px;" onclick="copyContactText('@ynkozlova', 'Контакт @ynkozlova')">
+            <i data-lucide="copy" style="width: 14px; height: 14px;"></i>
+            Скопировать юзернейм
+          </button>
+        </div>
+      </div>
+
+      <div style="background: var(--surface-container-high); border: 1px solid var(--outline-variant); border-radius: var(--radius-sm); padding: var(--space-md); font-size: 0.8125rem; line-height: 1.5; color: var(--on-surface-variant);">
+        💡 <b>Как связаться:</b> Откройте приложение Telegram на телефоне или компьютере, введите в поисковую строку <b>@ynkozlova</b> и отправьте сообщение с пометкой <b>«Пилот БФЛ»</b>.
+      </div>
+
+      <button class="btn-secondary" style="width: 100%; margin-top: var(--space-md);" onclick="closeModal('modal-tg')">
+        Закрыть окно
+      </button>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div class="toast-pill" id="app-toast">
+    <i data-lucide="check" style="width: 16px; height: 16px; color: var(--positive);"></i>
+    <span id="toast-text">Контакт скопирован в буфер обмена!</span>
+  </div>
+
+  <!-- GEMINI NOTEBOOK HOST SHIM API (FOR PERSISTENCE) -->
+  <api-shim></api-shim>
+
+  <!-- ============================================================
+       APPLICATION JAVASCRIPT LOGIC
+       ============================================================ -->
+  <script>
+    /* -------------------------------------------------------------
+       AUDIO CASE DATA & TRANSCRIPTS
+       ------------------------------------------------------------- */
+    const CASE_DATA = [
+      {
+        id: 0,
+        audioUrl: "https://cdn.jsdelivr.net/gh/ynkozlova-cpu/govorun-ai@main/demos/bfl-kvalifikaciya.wav",
+        title: "Квалификация лида с долгом 2.5 млн руб. по 127-ФЗ",
+        meta: "Новосибирск • Коллекторы 5 мес. • Без залогов",
+        badge: "КЕЙС 1: КВАЛИФИКАЦИЯ 127-ФЗ",
+        totalTime: 105,
+        totalTimeFormatted: "01:45",
+        summary: "Лид полностью квалифицирован. Долг 2.5 млн руб. Залогов нет. Назначен созвон со старшим юристом на 12:00.",
+        dialog: [
+          { time: 0, speaker: "robot", name: "ИИ Светлана", text: "Здравствуйте, меня зовут Светлана, компания по списанию долгов. Расскажу, как законно списать долги по 127 федеральному закону. Подскажите, что вас беспокоит?", tag: "Приветствие и 127-ФЗ" },
+          { time: 9, speaker: "client", name: "Клиент Юля", text: "А, ну я хочу узнать, вообще, реально ли списать долги или это просто всё мошенничество?", tag: null },
+          { time: 16, speaker: "robot", name: "ИИ Светлана", text: "Понимаю ваши сомнения. Это законный процесс. Мы работаем по 127 федеральному закону. Более полутора тысяч успешных дел. Давайте разберём вашу ситуацию. Как вас зовут?", tag: "Отработка возражения" },
+          { time: 26, speaker: "client", name: "Клиент Юля", text: "Меня Юля зовут.", tag: null },
+          { time: 29, speaker: "robot", name: "ИИ Светлана", text: "Юля, приятно познакомиться. Скажите, пожалуйста, из какого вы города? Это поможет понять, как удобнее будет организовать консультацию.", tag: "География" },
+          { time: 36, speaker: "client", name: "Клиент Юля", text: "Я из Новосибирска.", tag: "Новосибирск" },
+          { time: 39, speaker: "robot", name: "ИИ Светлана", text: "Записала. Юля, Новосибирск. Теперь важно понять вашу ситуацию глубже. В чём именно сейчас основная проблема? Звонки, суд, коллекторы. Что происходит?", tag: "Выявление проблемы" },
+          { time: 48, speaker: "client", name: "Клиент Юля", text: "Ну что, меня беспокоят коллекторы, потому что я уже не плачу 5 месяцев.", tag: "Коллекторы, просрочка 5 мес." },
+          { time: 54, speaker: "robot", name: "ИИ Светлана", text: "Понимаю, когда коллекторы беспокоят — это выбивает из колеи. Скажите, пожалуйста, а общая сумма долга у вас сейчас какая примерно?", tag: "Квалификация суммы" },
+          { time: 63, speaker: "client", name: "Клиент Юля", text: "Два с половиной миллиона.", tag: "Сумма: 2.5 млн ₽" },
+          { time: 67, speaker: "robot", name: "ИИ Светлана", text: "То есть около 2 500 000 рублей, верно? Уточните, пожалуйста, суд уже был по этому долгу или пока только звонки и требования?", tag: "Проверка суда" },
+          { time: 76, speaker: "client", name: "Клиент Юля", text: "Пока только коллекторы звонят, суда не было.", tag: "Суда нет" },
+          { time: 80, speaker: "robot", name: "ИИ Светлана", text: "Поняла, значит суда еще не было. Юля, подскажите, среди этих кредитов есть что-то в залоге? Квартира, машина?", tag: "Проверка залогов" },
+          { time: 87, speaker: "client", name: "Клиент Юля", text: "А нет, у меня нет залоговых кредитов.", tag: "Залогов нет" },
+          { time: 91, speaker: "robot", name: "ИИ Светлана", text: "Хорошо, залогов нет. Юля, теперь уточню по доходу: он официальный или нет? И есть ли несовершеннолетние дети?", tag: "Доход и дети" },
+          { time: 98, speaker: "client", name: "Клиент Юля", text: "Официальный, 100 000 получаю. В разводе, двое детей (8 и 16 лет).", tag: "Доход 100k, 2 детей" },
+          { time: 102, speaker: "robot", name: "ИИ Светлана", text: "Отлично. Записала вас на сегодня в 12:00 дня. Наш юрист свяжется с вами и детально разберет списание по 127-ФЗ.", tag: "Запись на консультацию" }
+        ]
+      },
+      {
+        id: 1,
+        audioUrl: "https://cdn.jsdelivr.net/gh/ynkozlova-cpu/govorun-ai@main/demos/bfl-demo-svetlana.wav",
+        title: "Отработка возражений: Бесплатность процедур и проверка на обман",
+        meta: "Сомнения клиента • 1500+ дел • Мой Арбитр",
+        badge: "КЕЙС 2: ОТРАБОТКА ВОЗРАЖЕНИЙ",
+        totalTime: 95,
+        totalTimeFormatted: "01:35",
+        summary: "Отработаны сомнения в легальности банкротства. Обоснован бесплатный первичный аудит и дистанционная подача через арбитраж.",
+        dialog: [
+          { time: 0, speaker: "robot", name: "ИИ Светлана", text: "Здравствуйте! Юридическая служба Говорун AI по списанию задолженностей. Скажите, актуально ли для вас списание кредитов по 127-ФЗ?", tag: "Приветствие" },
+          { time: 8, speaker: "client", name: "Клиент", text: "Да кругом один обман! Вы сейчас наобещаете, деньги заберете, а долги останутся! Где гарантия, что это законно?", tag: "Возражение: Мошенничество" },
+          { time: 15, speaker: "robot", name: "ИИ Светлана", text: "Я вас прекрасно понимаю, сейчас действительно много сомнительной рекламы. Но процедура банкротства — это государственная программа по Федеральному закону № 127. Все решения выносит только Арбитражный суд РФ, а не частная контора.", tag: "127-ФЗ и Арбитраж" },
+          { time: 27, speaker: "client", name: "Клиент", text: "А почему у вас консультация бесплатная? Бесплатный сыр только в мышеловке!", tag: "Возражение: Бесплатность" },
+          { time: 33, speaker: "robot", name: "ИИ Светлана", text: "Консультация бесплатна, потому что перед тем как браться за дело, юрист обязан провести аудит: проверить сумму долга, сделки за 3 года и риски имущества. Если мы видим, что списать долг нельзя — мы прямо говорим об этом и не берем человека в работу.", tag: "Прозрачность аудита" },
+          { time: 48, speaker: "client", name: "Клиент", text: "А если у вас нет офиса в моем городе? Как документы передавать?", tag: "Возражение: Нет офиса" },
+          { time: 54, speaker: "robot", name: "ИИ Светлана", text: "Все дела по 127-ФЗ ведутся через федеральную систему «Мой Арбитр» в электронном виде. Вам не нужно сидеть в судах или очередях — юристы подают всё удаленно. Скажите, какая у вас общая сумма долга перед банками?", tag: "Электронный суд" },
+          { time: 68, speaker: "client", name: "Клиент", text: "Ну... около миллиона двухсот тысяч рублей в трех банках.", tag: "Сумма: 1.2 млн ₽" },
+          { time: 74, speaker: "robot", name: "ИИ Светлана", text: "Сумма от 300 000 рублей полностью подпадает под списание. Давайте назначим 15-минутный звонок старшего арбитражного юриста для расчета защиты?", tag: "Запись на аудит" }
+        ]
+      },
+      {
+        id: 2,
+        audioUrl: "https://cdn.jsdelivr.net/gh/ynkozlova-cpu/govorun-ai@main/demos/bfl-trenazher-os.wav",
+        title: "Выявление имущества и сохранение автомобиля при долге 870 тыс. руб.",
+        meta: "Пермь • Ст. 446 ГПК • СПИН-диалог и конфиденциальность",
+        badge: "КЕЙС 3: ЗАЩИТА АКТИВОВ",
+        totalTime: 100,
+        totalTimeFormatted: "01:40",
+        summary: "Выявлен долг 870 тыс. руб., единственное жилье и автомобиль. Робот снял страх за работу и обосновал план защиты авто.",
+        dialog: [
+          { time: 0, speaker: "robot", name: "ИИ Светлана", text: "Здравствуйте, меня зовут Светлана, Федеральный центр банкротства граждан. Вы оставляли заявку на списание задолженности. Удобно уделить пару минут?", tag: "Контакт" },
+          { time: 9, speaker: "client", name: "Дмитрий", text: "Здравствуйте. Да, но у меня сложный вопрос: у меня машина есть, старенькая, но нужна детей возить. Если подам на банкротство — машину отберут?", tag: "Страх: Потеря авто" },
+          { time: 19, speaker: "robot", name: "ИИ Светлана", text: "Дмитрий, очень важный вопрос, мы его обязательно разберем. Скажите, какая общая сумма долга и перед кем кредиты?", tag: "Выявление долга" },
+          { time: 28, speaker: "client", name: "Дмитрий", text: "870 000 рублей: две кредитные карты, потребкредит и микрозаймы. Просрочка уже пять месяцев.", tag: "Долг: 870k, просрочка 5 мес." },
+          { time: 37, speaker: "robot", name: "ИИ Светлана", text: "Поняла, 870 тысяч. Машина сейчас находится в залоге или автокредит уже полностью закрыт?", tag: "Статус залога" },
+          { time: 43, speaker: "client", name: "Дмитрий", text: "Нет, залогов нет, машина в чистой собственности, брал наличными.", tag: "Авто без залога" },
+          { time: 48, speaker: "robot", name: "ИИ Светлана", text: "Отлично, залогового статуса нет. А жилье у вас единственное?", tag: "Проверка жилья" },
+          { time: 53, speaker: "client", name: "Дмитрий", text: "Да, квартира единственная, живем с женой и двумя детьми.", tag: "Единственное жилье" },
+          { time: 58, speaker: "robot", name: "ИИ Светлана", text: "Единственное жилье защищено статьей 446 ГПК РФ, его никто не заберет. Что касается машины — есть законные механизмы ее сохранения, например, обоснование необходимости для семьи с детьми. Кроме того, процедура конфиденциальна: работодатель о ней не узнает.", tag: "Ст. 446 ГПК и Конфиденциальность" },
+          { time: 76, speaker: "client", name: "Дмитрий", text: "А на работе точно не узнают? Я за это больше всего переживал.", tag: "Скрытая боль: Работа" },
+          { time: 82, speaker: "robot", name: "ИИ Светлана", text: "Абсолютно. Никаких уведомлений на работу юристы не направляют. Давайте передам вашу ситуацию ведущему юристу, он подготовит точный план сохранения авто?", tag: "Перевод на юриста" },
+          { time: 92, speaker: "client", name: "Дмитрий", text: "Давайте, это будет отлично, спасибо.", tag: "Согласие клиента" }
+        ]
+      }
+    ];
+
+    /* -------------------------------------------------------------
+       STATE MANAGEMENT
+       ------------------------------------------------------------- */
+    let currentCaseIdx = 0;
+    let isAudioPlaying = false;
+    let audioCurrentTime = 0;
+    let playbackSpeed = 1.0;
+    let isAudioMuted = false;
+    let playTimerInterval = null;
+
+    // Web Audio Synthesizer variables
+    let audioCtx = null;
+    let synthOsc = null;
+    let synthGain = null;
+    let noiseNode = null;
+    let filterNode = null;
+
+    // Calculator State
+    let calcLeads = 1000;
+    let calcCpl = 1600;
+    let calcSpeed = 20;
+
+    /* -------------------------------------------------------------
+       INITIALIZATION
+       ------------------------------------------------------------- */
+    window.addEventListener('DOMContentLoaded', function() {
+      // Initialize Lucide icons
+      if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        window.lucide.createIcons();
+      }
+
+      // Render initial case transcript
+      renderCase(0);
+
+      // Initialize visualizer canvas
+      initWaveformCanvas();
+
+      // Run initial calculator update
+      recalculateROI();
+    });
+
+    /* -------------------------------------------------------------
+       AUDIO PLAYER & SYNTHESIZER
+       ------------------------------------------------------------- */
+    function initWebAudio() {
+      if (audioCtx) return;
+      try {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) {
+          audioCtx = new AudioContextClass();
+        }
+      } catch (e) {
+        console.warn("Web Audio not available", e);
+      }
+    }
+
+    function startAcousticSimulation() {
+      if (!audioCtx || isAudioMuted) return;
+      try {
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        
+        // Formant speech-simulation carrier oscillator
+        synthOsc = audioCtx.createOscillator();
+        synthGain = audioCtx.createGain();
+        filterNode = audioCtx.createBiquadFilter();
+
+        synthOsc.type = 'sawtooth';
+        synthOsc.frequency.setValueAtTime(220, audioCtx.currentTime);
+
+        filterNode.type = 'bandpass';
+        filterNode.frequency.setValueAtTime(1100, audioCtx.currentTime);
+        filterNode.Q.setValueAtTime(4.0, audioCtx.currentTime);
+
+        synthGain.gain.setValueAtTime(0.015, audioCtx.currentTime);
+
+        synthOsc.connect(filterNode);
+        filterNode.connect(synthGain);
+        synthGain.connect(audioCtx.destination);
+
+        synthOsc.start();
+      } catch (e) {
+        console.warn("Failed to start synth", e);
+      }
+    }
+
+    function stopAcousticSimulation() {
+      if (synthOsc) {
+        try {
+          synthOsc.stop();
+          synthOsc.disconnect();
+          synthOsc = null;
+        } catch (e) {}
+      }
+      if (filterNode) {
+        try {
+          filterNode.disconnect();
+          filterNode = null;
+        } catch (e) {}
+      }
+      if (synthGain) {
+        try {
+          synthGain.disconnect();
+          synthGain = null;
+        } catch (e) {}
+      }
+    }
+
+    function switchCase(idx) {
+      if (idx < 0 || idx >= CASE_DATA.length) return;
+      pauseAudio();
+      currentCaseIdx = idx;
+      audioCurrentTime = 0;
+      const audioEl = document.getElementById('real-demo-audio');
+      const data = CASE_DATA[idx];
+      if (audioEl && data && data.audioUrl) {
+        audioEl.src = data.audioUrl;
+        audioEl.dataset.case = String(idx);
+        audioEl.load();
+      }
+
+      // Update Tab Styles
+      for (let i = 0; i < CASE_DATA.length; i++) {
+        const tabEl = document.getElementById('case-tab-' + i);
+        if (tabEl) {
+          if (i === idx) {
+            tabEl.classList.add('active');
+            tabEl.setAttribute('aria-selected', 'true');
+          } else {
+            tabEl.classList.remove('active');
+            tabEl.setAttribute('aria-selected', 'false');
+          }
+        }
+      }
+
+      renderCase(idx);
+    }
+
+    function renderCase(idx) {
+      const data = CASE_DATA[idx];
+      if (!data) return;
+
+      const badgeEl = document.getElementById('current-case-badge');
+      if (badgeEl) badgeEl.textContent = data.badge;
+
+      const summaryEl = document.getElementById('case-summary-text');
+      if (summaryEl) summaryEl.textContent = data.summary;
+
+      const totalTimeEl = document.getElementById('time-total');
+      if (totalTimeEl) totalTimeEl.textContent = data.totalTimeFormatted;
+
+      const scrubSlider = document.getElementById('audio-progress');
+      if (scrubSlider) {
+        scrubSlider.max = data.totalTime;
+        scrubSlider.value = 0;
+      }
+
+      const curTimeEl = document.getElementById('time-current');
+      if (curTimeEl) curTimeEl.textContent = "00:00";
+
+      // Populate Transcript
+      const container = document.getElementById('transcript-container');
+      if (!container) return;
+
+      let html = '';
+      data.dialog.forEach((item, index) => {
+        const isRobot = item.speaker === 'robot';
+        const speakerClass = isRobot ? 'robot' : 'client';
+        const iconName = isRobot ? 'bot' : 'user';
+        const m = Math.floor(item.time / 60);
+        const s = item.time % 60;
+        const timeFormatted = (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
+
+        html += `
+          <div class="dialog-item" id="dialog-item-${index}" onclick="jumpToDialogTime(${item.time})">
+            <div class="dialog-speaker-row">
+              <span class="speaker-label ${speakerClass}">
+                <i data-lucide="${iconName}" style="width: 14px; height: 14px;"></i>
+                ${item.name}
+              </span>
+              <span class="dialog-timestamp">${timeFormatted}</span>
+            </div>
+            <div class="dialog-text">${item.text}</div>
+            ${item.tag ? `<span class="qualify-milestone-tag">${item.tag}</span>` : ''}
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+
+      if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        window.lucide.createIcons();
+      }
+
+      updateActiveDialogHighlight(0);
+    }
+
+    function togglePlayPause() {
+      if (isAudioPlaying) {
+        pauseAudio();
+      } else {
+        playAudio();
+      }
+    }
+
+    function playAudio() {
+      isAudioPlaying = true;
+      const statusEl = document.getElementById('player-status-text');
+      if (statusEl) statusEl.textContent = "Идёт запись демо-диалога";
+      const activeStateEl = document.getElementById('player-active-state');
+      if (activeStateEl) activeStateEl.classList.add('playing');
+      const iconEl = document.getElementById('play-pause-icon');
+      if (iconEl) {
+        iconEl.setAttribute('data-lucide', 'pause');
+        if (window.lucide && typeof window.lucide.createIcons === 'function') {
+          window.lucide.createIcons();
+        }
+      }
+      const audioEl = document.getElementById('real-demo-audio');
+      const data = CASE_DATA[currentCaseIdx];
+      if (audioEl && data && data.audioUrl) {
+        if (audioEl.dataset.case != String(currentCaseIdx)) {
+          audioEl.src = data.audioUrl;
+          audioEl.dataset.case = String(currentCaseIdx);
+        }
+        audioEl.playbackRate = playbackSpeed || 1;
+        audioEl.currentTime = audioCurrentTime || 0;
+        audioEl.muted = !!isAudioMuted;
+        const p = audioEl.play();
+        if (p && typeof p.catch === 'function') p.catch(function(){});
+        clearInterval(playTimerInterval);
+        playTimerInterval = setInterval(function() {
+          if (!audioEl || audioEl.paused) return;
+          audioCurrentTime = audioEl.currentTime;
+          if (audioEl.duration && isFinite(audioEl.duration)) {
+            CASE_DATA[currentCaseIdx].totalTime = audioEl.duration;
+            const totalTimeEl = document.getElementById('time-total');
+            if (totalTimeEl) {
+              const d = Math.floor(audioEl.duration);
+              const m = Math.floor(d / 60), s = d % 60;
+              totalTimeEl.textContent = (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+            }
+            const scrubSlider = document.getElementById('audio-progress');
+            if (scrubSlider) scrubSlider.max = audioEl.duration;
+          }
+          if (audioEl.ended) { pauseAudio(); }
+          updatePlayerUI();
+        }, 250);
+      } else {
+        // fallback timer without synth noise
+        const maxTime = CASE_DATA[currentCaseIdx].totalTime;
+        clearInterval(playTimerInterval);
+        playTimerInterval = setInterval(function() {
+          audioCurrentTime += 0.5 * playbackSpeed;
+          if (audioCurrentTime >= maxTime) {
+            audioCurrentTime = maxTime;
+            pauseAudio();
+          }
+          updatePlayerUI();
+        }, 500);
+      }
+    }
+
+    function pauseAudio() {
+      isAudioPlaying = false;
+      clearInterval(playTimerInterval);
+      const audioEl = document.getElementById('real-demo-audio');
+      if (audioEl) { try { audioEl.pause(); } catch (e) {} }
+      try { stopAcousticSimulation(); } catch (e) {}
+
+      const statusEl = document.getElementById('player-status-text');
+      if (statusEl) statusEl.textContent = "Воспроизведение приостановлено";
+
+      const activeStateEl = document.getElementById('player-active-state');
+      if (activeStateEl) activeStateEl.classList.remove('playing');
+
+      const iconEl = document.getElementById('play-pause-icon');
+      if (iconEl) {
+        iconEl.setAttribute('data-lucide', 'play');
+        if (window.lucide && typeof window.lucide.createIcons === 'function') {
+          window.lucide.createIcons();
+        }
+      }
+    }
+
+    function onScrubInput(val) {
+      audioCurrentTime = parseFloat(val);
+      const audioEl = document.getElementById('real-demo-audio');
+      if (audioEl && audioEl.src) {
+        try { audioEl.currentTime = audioCurrentTime; } catch (e) {}
+      }
+      updatePlayerUI();
+    }
+
+    function jumpAudio(seconds) {
+      const maxTime = CASE_DATA[currentCaseIdx].totalTime;
+      audioCurrentTime = Math.max(0, Math.min(maxTime, audioCurrentTime + seconds));
+      updatePlayerUI();
+    }
+
+    function jumpToDialogTime(seconds) {
+      audioCurrentTime = seconds;
+      updatePlayerUI();
+      if (!isAudioPlaying) {
+        playAudio();
+      }
+    }
+
+    function setPlaySpeed(speed) {
+      playbackSpeed = speed;
+      const audioEl = document.getElementById('real-demo-audio');
+      if (audioEl) audioEl.playbackRate = speed;
+      const speeds = [1.0, 1.25, 1.5];
+      const ids = ['speed-1x', 'speed-125x', 'speed-15x'];
+      ids.forEach((id, i) => {
+        const btn = document.getElementById(id);
+        if (btn) {
+          if (speeds[i] === speed) btn.classList.add('active');
+          else btn.classList.remove('active');
+        }
+      });
+    }
+
+    function toggleMuteAudio() {
+      isAudioMuted = !isAudioMuted;
+      const audioEl = document.getElementById('real-demo-audio');
+      if (audioEl) audioEl.muted = isAudioMuted;
+      const icon = document.getElementById('mute-icon');
+      if (isAudioMuted) {
+        stopAcousticSimulation();
+        if (icon) icon.setAttribute('data-lucide', 'volume-x');
+      } else {
+        if (isAudioPlaying) startAcousticSimulation();
+        if (icon) icon.setAttribute('data-lucide', 'volume-2');
+      }
+      if (window.lucide && typeof window.lucide.createIcons === 'function') {
+        window.lucide.createIcons();
+      }
+    }
+
+    function updatePlayerUI() {
+      const scrubSlider = document.getElementById('audio-progress');
+      if (scrubSlider) scrubSlider.value = audioCurrentTime;
+
+      const m = Math.floor(audioCurrentTime / 60);
+      const s = Math.floor(audioCurrentTime % 60);
+      const curFormatted = (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
+      const curTimeEl = document.getElementById('time-current');
+      if (curTimeEl) curTimeEl.textContent = curFormatted;
+
+      updateActiveDialogHighlight(audioCurrentTime);
+    }
+
+    function updateActiveDialogHighlight(time) {
+      const dialog = CASE_DATA[currentCaseIdx].dialog;
+      let activeIndex = 0;
+      for (let i = 0; i < dialog.length; i++) {
+        if (time >= dialog[i].time) {
+          activeIndex = i;
+        } else {
+          break;
+        }
+      }
+
+      dialog.forEach((_, i) => {
+        const el = document.getElementById('dialog-item-' + i);
+        if (el) {
+          if (i === activeIndex) {
+            el.classList.add('active');
+            // Auto scroll container
+            const container = document.getElementById('transcript-scroll-box');
+            if (container && isAudioPlaying) {
+              const elTop = el.offsetTop - container.offsetTop;
+              if (typeof container.scrollTo === 'function') {
+                container.scrollTo({ top: elTop - 40, behavior: 'smooth' });
+              } else {
+                container.scrollTop = elTop - 40;
+              }
+            }
+          } else {
+            el.classList.remove('active');
+          }
+        }
+      });
+    }
+
+    /* -------------------------------------------------------------
+       WAVEFORM CANVAS VISUALIZER
+       ------------------------------------------------------------- */
+    function initWaveformCanvas() {
+      const canvas = document.getElementById('waveform-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      const barsCount = 42;
+      let barHeights = [];
+      for (let i = 0; i < barsCount; i++) {
+        barHeights.push(10 + Math.random() * 20);
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        const w = canvas.width;
+        const h = canvas.height;
+        const barWidth = 6;
+        const gap = (w - (barsCount * barWidth)) / (barsCount - 1);
+
+        // Center baseline
+        const midY = h / 2;
+
+        for (let i = 0; i < barsCount; i++) {
+          let targetHeight = 8;
+          if (isAudioPlaying) {
+            // Dynamic pulsating bars based on speech simulation
+            const wave = Math.sin((Date.now() / 140) + i * 0.4);
+            const randPulse = Math.random() * 25;
+            targetHeight = 14 + (Math.abs(wave) * 45) + randPulse;
+          } else {
+            targetHeight = 10 + Math.sin(i * 0.3) * 6;
+          }
+
+          // Smooth interpolation
+          barHeights[i] += (targetHeight - barHeights[i]) * 0.2;
+
+          const barH = barHeights[i];
+          const x = i * (barWidth + gap);
+          const y = midY - barH / 2;
+
+          // Metallic Gold gradient
+          const grad = ctx.createLinearGradient(0, y, 0, y + barH);
+          if (isAudioPlaying) {
+            grad.addColorStop(0, '#f7d56e');
+            grad.addColorStop(0.5, '#d4af37');
+            grad.addColorStop(1, '#947a24');
+          } else {
+            grad.addColorStop(0, '#4a5d7c');
+            grad.addColorStop(1, '#253347');
+          }
+
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.roundRect(x, y, barWidth, barH, 3);
+          ctx.fill();
+        }
+
+        requestAnimationFrame(draw);
+      }
+
+      requestAnimationFrame(draw);
+    }
+
+    /* -------------------------------------------------------------
+       ROI & ORDER CALCULATOR LOGIC
+       ------------------------------------------------------------- */
+    function onLeadsChange(val) {
+      calcLeads = parseInt(val, 10);
+      const disp = document.getElementById('disp-leads');
+      if (disp) disp.textContent = calcLeads.toLocaleString('ru-RU') + " лидов";
+      recalculateROI();
+    }
+
+    function onCplChange(val) {
+      calcCpl = parseInt(val, 10);
+      const disp = document.getElementById('disp-cpl');
+      if (disp) disp.textContent = calcCpl.toLocaleString('ru-RU') + " ₽";
+      recalculateROI();
+    }
+
+    function onSpeedChange(val) {
+      calcSpeed = parseInt(val, 10);
+      const disp = document.getElementById('disp-speed');
+      if (disp) disp.textContent = calcSpeed + " минут";
+      recalculateROI();
+    }
+
+    function recalculateROI() {
+      // Illustrative model only — not a guaranteed forecast. Replace with client data.
+
+      // Human call center operators needed: ~350-400 leads per operator/month
+      const operatorsCount = Math.max(1, Math.ceil(calcLeads / 350));
+      const dispOps = document.getElementById('disp-operators');
+      if (dispOps) dispOps.textContent = operatorsCount + (operatorsCount === 1 ? " оператор" : (operatorsCount < 5 ? " оператора" : " операторов"));
+
+      // Drop rate calculation based on response speed in minutes
+      // Fast response (1 min) ~8% loss; 20 min ~32% loss; 60 min ~55% loss
+      const dropRate = Math.min(0.58, 0.06 + Math.log(calcSpeed + 1) * 0.12);
+
+      // Rescued leads with Govorun AI (3-second pickup reduces drop-off to 4%)
+      const savedLeadsCount = Math.round(calcLeads * (dropRate - 0.04));
+      const savedMarketingBudget = Math.round(savedLeadsCount * calcCpl);
+
+      // Cost of Human Call Center: 75,000 ₽ per operator (salary + taxes + telephony + software)
+      const humanStaffCost = operatorsCount * 75000;
+
+      // Cost of Govorun AI: ~12 ₽/min * avg 2.5 min = 30 ₽ per lead contact
+      const govorunCost = calcLeads * 30;
+
+      // Net Monthly Profit = Rescued Ad Budget + (Human Staff Cost - Govorun Cost)
+      const netMonthlyProfit = savedMarketingBudget + (humanStaffCost - govorunCost);
+      const roiPercent = Math.round((netMonthlyProfit / govorunCost) * 100);
+
+      // Update UI elements
+      const netProfitEl = document.getElementById('calc-net-profit');
+      if (netProfitEl) netProfitEl.textContent = "+" + netMonthlyProfit.toLocaleString('ru-RU') + " ₽";
+
+      const roiEl = document.getElementById('calc-roi-multiplier');
+      if (roiEl) roiEl.innerHTML = `Ориентир модели (не гарантия): <span class="mono-num" style="color: var(--positive); font-weight: 700;">+${roiPercent}% ROI</span>`;
+
+      const lostBudgetEl = document.getElementById('calc-lost-budget');
+      if (lostBudgetEl) lostBudgetEl.textContent = "-" + savedMarketingBudget.toLocaleString('ru-RU') + " ₽";
+
+      const savedLeadsEl = document.getElementById('calc-saved-leads');
+      if (savedLeadsEl) savedLeadsEl.textContent = "+" + savedLeadsCount.toLocaleString('ru-RU') + " лидов";
+
+      const humanCostEl = document.getElementById('calc-human-cost');
+      if (humanCostEl) humanCostEl.textContent = humanStaffCost.toLocaleString('ru-RU') + " ₽";
+
+      const robotCostEl = document.getElementById('calc-robot-cost');
+      if (robotCostEl) robotCostEl.textContent = govorunCost.toLocaleString('ru-RU') + " ₽";
+
+      // Order recommendation card
+      const packTitleEl = document.getElementById('order-pack-title');
+      if (packTitleEl) packTitleEl.textContent = `Рекомендуемый пакет: ${calcLeads.toLocaleString('ru-RU')} лидов / мес.`;
+
+      const packDescEl = document.getElementById('order-pack-desc');
+      if (packDescEl) packDescEl.textContent = `Чистая экономия бюджета составит ${netMonthlyProfit.toLocaleString('ru-RU')} ₽/мес. Пилот на вашем сценарии — по согласованию.`;
+
+      // Update Volume input in Pilot Modal
+      const formVol = document.getElementById('form-volume');
+      if (formVol) formVol.value = `${calcLeads.toLocaleString('ru-RU')} лидов / месяц (${calcCpl} ₽ CPL)`;
+    }
+
+    function openOrderModalWithVolume() {
+      openPilotModal();
+    }
+
+    /* -------------------------------------------------------------
+       COMPARATIVE MATRIX FILTER
+       ------------------------------------------------------------- */
+    function filterCompareRows(category, btnElement) {
+      const rows = document.querySelectorAll('#compare-table-body tr');
+      rows.forEach(row => {
+        const cat = row.getAttribute('data-cat');
+        if (category === 'all' || cat === category) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+
+      const buttons = document.querySelectorAll('.compare-controls-bar .filter-btn');
+      buttons.forEach(b => b.classList.remove('active'));
+      if (btnElement) btnElement.classList.add('active');
+    }
+
+    /* -------------------------------------------------------------
+       WORKFLOW STEP & CRM PREVIEW
+       ------------------------------------------------------------- */
+    function activateStep(stepIdx, element) {
+      const cards = document.querySelectorAll('.workflow-step-card');
+      cards.forEach((c, idx) => {
+        if (idx === stepIdx) c.classList.add('active');
+        else c.classList.remove('active');
+      });
+
+      if (stepIdx === 4) {
+        switchCrmPreview('amo');
+      }
+    }
+
+    function switchCrmPreview(view) {
+      const amoCard = document.getElementById('crm-view-amo');
+      const b24Card = document.getElementById('crm-view-b24');
+      const tgCard = document.getElementById('crm-view-tg');
+
+      const btnAmo = document.getElementById('crm-tab-amo');
+      const btnB24 = document.getElementById('crm-tab-b24');
+      const btnTg = document.getElementById('crm-tab-tg');
+
+      if (amoCard) amoCard.style.display = (view === 'amo') ? 'block' : 'none';
+      if (b24Card) b24Card.style.display = (view === 'b24') ? 'block' : 'none';
+      if (tgCard) tgCard.style.display = (view === 'tg') ? 'block' : 'none';
+
+      if (btnAmo) btnAmo.classList.toggle('active', view === 'amo');
+      if (btnB24) btnB24.classList.toggle('active', view === 'b24');
+      if (btnTg) btnTg.classList.toggle('active', view === 'tg');
+    }
+
+    function scrollToPlayer() {
+      const el = document.getElementById('demo-player');
+      if (el) {
+        if (typeof el.scrollIntoView === 'function') {
+          el.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    }
+
+    /* -------------------------------------------------------------
+       FAQ ACCORDION
+       ------------------------------------------------------------- */
+    function toggleFaq(button) {
+      const item = button.closest('.faq-item');
+      if (!item) return;
+      const isOpen = item.classList.contains('open');
+
+      // Close other items
+      const allItems = document.querySelectorAll('.faq-item');
+      allItems.forEach(i => i.classList.remove('open'));
+
+      if (!isOpen) {
+        item.classList.add('open');
+      }
+    }
+
+    /* -------------------------------------------------------------
+       MODALS & TOASTS
+       ------------------------------------------------------------- */
+    function openPilotModal() {
+      const modal = document.getElementById('modal-pilot');
+      if (modal) modal.classList.add('open');
+    }
+
+    function openTelegramModal() {
+      const modal = document.getElementById('modal-tg');
+      if (modal) modal.classList.add('open');
+    }
+
+    function closeModal(modalId) {
+      const modal = document.getElementById(modalId);
+      if (modal) modal.classList.remove('open');
+    }
+
+    function closeModalOnBackdrop(e, modalId) {
+      if (e.target && e.target.id === modalId) {
+        closeModal(modalId);
+      }
+    }
+
+    function handlePilotSubmit(e) {
+      e.preventDefault();
+      const form = document.getElementById('pilot-request-form');
+      const successBlock = document.getElementById('pilot-form-success');
+      if (form) form.style.display = 'none';
+      if (successBlock) successBlock.style.display = 'block';
+
+      showToast("Заявка на демо на вашем сценарии успешно отправлена!");
+    }
+
+    function copyContactText(text, label) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          showToast(`${label} скопирован в буфер обмена!`);
+        }).catch(() => {
+          fallbackCopyText(text, label);
+        });
+      } else {
+        fallbackCopyText(text, label);
+      }
+    }
+
+    function fallbackCopyText(text, label) {
+      const tempInput = document.createElement("input");
+      tempInput.value = text;
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      try {
+        document.execCommand("copy");
+        showToast(`${label} скопирован в буфер обмена!`);
+      } catch (err) {
+        showToast(`Контакт: ${text}`);
+      }
+      document.body.removeChild(tempInput);
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('app-toast');
+      const toastText = document.getElementById('toast-text');
+      if (toast && toastText) {
+        toastText.textContent = message;
+        toast.classList.add('show');
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 3200);
+      }
+    }
+  </script>
 </body>
 </html>
