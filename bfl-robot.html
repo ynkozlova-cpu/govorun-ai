@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#121212">
+<meta name="description" content="Робот-квалификатор для компаний по банкротству физических лиц. Принимает входящие обращения, перезванивает по пропущенным, задаёт вопросы и передаёт подходящий лид юристу.">
+<title>Говорун AI — робот-квалификатор для компаний БФЛ</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<style>
+:root{--bg:#121212;--surface:#1c1c1e;--surface2:#202024;--gold:#d4af37;--gold-soft:#e8d18a;--purple:#6b2fa0;--navy:#0a0e27;--red:#8b0000;--white:#fff;--muted:#a0a0a0;--line:#39393d;--max:1160px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--white);font:16px/1.55 Inter,"Segoe UI",Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased}a{color:inherit}button,input,textarea{font:inherit}.wrap{width:min(var(--max),calc(100% - 40px));margin:auto}.topbar{display:flex;align-items:center;justify-content:space-between;gap:24px;padding:22px 0;border-bottom:1px solid #ffffff12}.brand{display:flex;align-items:center;gap:13px;text-decoration:none}.brand img{width:48px;height:48px;object-fit:contain}.brand-name{font-weight:800;letter-spacing:.07em;font-size:16px}.brand-name span{color:var(--gold)}.brand-caption{font-size:10px;letter-spacing:.15em;color:var(--muted);text-transform:uppercase}.nav{display:flex;gap:25px;align-items:center;font-size:13px;color:#d0d0d0}.nav a{text-decoration:none}.nav a:hover{color:var(--gold)}.button{display:inline-flex;align-items:center;justify-content:center;gap:9px;border:1px solid var(--gold);background:var(--gold);color:#171717;text-decoration:none;padding:13px 19px;border-radius:3px;font-weight:750;font-size:13px;letter-spacing:.01em;cursor:pointer;transition:.2s}.button:hover{background:var(--gold-soft);transform:translateY(-1px)}.button.ghost{background:transparent;color:var(--white);border-color:#666}.button.ghost:hover{border-color:var(--gold);color:var(--gold)}.hero{position:relative;overflow:hidden;padding:92px 0 86px;border-bottom:1px solid #ffffff12;background:radial-gradient(ellipse at 82% 38%,#30213a 0,transparent 32%),linear-gradient(115deg,#121212 45%,#15141a 100%)}.hero:after{content:"";position:absolute;right:-120px;top:70px;width:540px;height:540px;border:1px solid #d4af3725;border-radius:50%;box-shadow:0 0 0 50px #d4af3708,0 0 0 110px #d4af3705;pointer-events:none}.eyebrow{display:flex;align-items:center;gap:12px;color:var(--gold);font:11px/1.4 "Courier New",monospace;letter-spacing:.16em;text-transform:uppercase}.eyebrow:before{content:"";width:34px;height:1px;background:var(--gold)}h1{font-size:clamp(39px,6.4vw,76px);line-height:1.02;letter-spacing:-.045em;max-width:800px;margin:22px 0 22px;font-weight:760}h1 em{font-style:normal;color:var(--gold)}.hero-copy{font-size:clamp(16px,2vw,19px);color:#c4c4c4;max-width:600px;margin:0 0 30px}.hero-actions{display:flex;gap:12px;flex-wrap:wrap}.hero-note{font:11px "Courier New",monospace;color:#777;margin-top:26px;letter-spacing:.04em}.hero-note span{color:var(--gold)}.section{padding:82px 0;border-bottom:1px solid #ffffff12}.section-head{display:flex;justify-content:space-between;gap:35px;align-items:end;margin-bottom:32px}.section-kicker{font:11px "Courier New",monospace;color:var(--gold);letter-spacing:.15em;text-transform:uppercase}.section h2{font-size:clamp(29px,4vw,46px);line-height:1.08;letter-spacing:-.035em;margin:12px 0 0;max-width:700px}.section-intro{color:var(--muted);max-width:390px;font-size:14px;margin:0}.pain-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}.pain-main{background:linear-gradient(135deg,#241719,#1c1c1e 75%);border:1px solid #5d282b;padding:32px;min-height:250px;position:relative}.pain-main:before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--red)}.pain-main h3{font-size:clamp(25px,3vw,34px);line-height:1.15;margin:0 0 15px;max-width:520px}.pain-main p{color:#c4bfc0;max-width:550px;margin:0}.pain-side{display:grid;gap:12px}.pain-item{background:var(--surface);border:1px solid var(--line);padding:20px 22px}.pain-item b{display:block;font-size:16px;margin-bottom:5px}.pain-item span{font-size:13px;color:var(--muted)}.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}.step{background:var(--surface);padding:24px 20px;min-height:210px}.step-num{font:12px "Courier New",monospace;color:var(--gold)}.step h3{font-size:18px;margin:32px 0 8px}.step p{font-size:13px;color:var(--muted);margin:0}.step .line{height:1px;width:30px;background:var(--gold);margin-top:20px}.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.feature{border:1px solid var(--line);background:linear-gradient(145deg,#202024,#171719);padding:23px;min-height:160px}.feature .index{font:11px "Courier New",monospace;color:var(--gold)}.feature h3{font-size:17px;margin:19px 0 8px}.feature p{font-size:13px;color:var(--muted);margin:0}.calculator{display:grid;grid-template-columns:1fr .85fr;gap:18px}.calc-panel,.result-panel{background:var(--surface);border:1px solid var(--line);padding:28px}.calc-panel h3,.result-panel h3{margin:0 0 7px;font-size:20px}.muted{color:var(--muted);font-size:13px;margin:0 0 24px}.range-field{margin:23px 0}.range-top{display:flex;justify-content:space-between;gap:15px;align-items:baseline;margin-bottom:9px;font-size:13px}.range-top output{font:700 16px "Courier New",monospace;color:var(--gold);white-space:nowrap}input[type=range]{width:100%;accent-color:var(--gold);cursor:pointer}.range-limits{display:flex;justify-content:space-between;color:#777;font:10px "Courier New",monospace}.result-box{padding:18px;background:#141414;border:1px solid #484035;margin:12px 0}.result-label{font-size:12px;color:var(--muted)}.result-value{font:700 clamp(28px,4vw,40px) "Courier New",monospace;color:var(--gold);margin-top:7px}.result-small{font-size:12px;color:#b9b9b9;line-height:1.5}.calc-disclaimer{font-size:11px;color:#888;margin-top:20px;line-height:1.6}.audio-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.audio-card{background:var(--surface);border:1px solid var(--line);padding:22px}.audio-label{font:11px "Courier New",monospace;color:var(--gold)}.audio-card h3{font-size:17px;margin:15px 0 6px}.audio-card p{font-size:12px;color:var(--muted);min-height:38px;margin:0 0 18px}.audio-card audio{width:100%;height:38px;accent-color:var(--gold)}.audio-status{font-size:11px;color:#a88a8a;margin-top:8px;min-height:18px}.form-layout{display:grid;grid-template-columns:.8fr 1.2fr;gap:40px}.form-copy h2{font-size:clamp(30px,4vw,44px);line-height:1.08;margin:12px 0}.form-copy p{color:var(--muted);font-size:14px}.contact-line{margin-top:28px;font:12px "Courier New",monospace;color:var(--gold)}.lead-form{display:grid;grid-template-columns:1fr 1fr;gap:14px}.form-field{display:flex;flex-direction:column;gap:7px}.form-field.full{grid-column:1/-1}.form-field label{font-size:12px;color:#c7c7c7}.form-field input,.form-field textarea{width:100%;background:#101012;border:1px solid #48484d;border-radius:2px;padding:13px;color:#fff;outline:none}.form-field input:focus,.form-field textarea:focus{border-color:var(--gold)}.form-field textarea{min-height:92px;resize:vertical}.consent{grid-column:1/-1;font-size:11px;color:#858585;line-height:1.5}.form-submit{grid-column:1/-1;display:flex;gap:16px;align-items:center;flex-wrap:wrap}.form-help{font-size:11px;color:#888;max-width:240px}.telegram-placeholder{margin-top:26px;padding:18px;border:1px dashed #57505d;color:#aaa;font-size:12px}.telegram-placeholder strong{display:block;color:#ddd;margin-bottom:5px}.footer{padding:27px 0 38px;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;color:#777;font-size:11px}.footer strong{color:#bbb;letter-spacing:.06em}.footer a{color:var(--gold);text-decoration:none}
+@media(max-width:850px){.nav{display:none}.section-head{display:block}.section-intro{margin-top:15px}.pain-grid,.calculator,.form-layout{grid-template-columns:1fr}.steps{grid-template-columns:repeat(2,1fr)}.feature-grid,.audio-grid{grid-template-columns:1fr 1fr}.hero{padding:70px 0}.hero:after{right:-300px;opacity:.5}}
+@media(max-width:560px){.wrap{width:min(100% - 28px,var(--max))}.topbar{padding:15px 0}.brand img{width:40px;height:40px}.brand-name{font-size:14px}.brand-caption{font-size:8px}.topbar>.button{padding:10px 12px;font-size:11px}.hero{padding:60px 0}.hero-actions{display:grid}.hero-actions .button{width:100%}.section{padding:60px 0}.steps,.feature-grid,.audio-grid{grid-template-columns:1fr}.step{min-height:170px}.step h3{margin-top:22px}.calc-panel,.result-panel{padding:20px}.lead-form{grid-template-columns:1fr}.form-field.full,.consent,.form-submit{grid-column:auto}.form-submit .button{width:100%}.pain-main{padding:25px 22px}.footer{display:block}.footer span{display:block;margin:8px 0}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="topbar">
+<a class="brand" href="#top" aria-label="Говорун AI — на главную">
+<img src="https://cdn.jsdelivr.net/gh/ynkozlova-cpu/govorun-ai@main/logo-govorun.png" alt="Логотип Говорун AI" onerror="this.style.display='none'">
+<span><span class="brand-name">ГОВОРУН <span>AI</span></span><span class="brand-caption">Общается. Анализирует. Обучает.</span></span>
+</a>
+<nav class="nav" aria-label="Основная навигация"><a href="#how">Как работает</a><a href="#calculator">Калькулятор</a><a href="#demo">Демо</a></nav>
+<a class="button" href="#request">Обсудить задачу</a>
+</header>
+</div>
+<main id="top">
+<section class="hero">
+<div class="wrap">
+<div class="eyebrow">Голосовая автоматизация · БФЛ</div>
+<h1>Не теряйте клиентов,<br>пока <em>ждёте ответа.</em></h1>
+<p class="hero-copy">Робот-квалификатор принимает входящие обращения, перезванивает по пропущенным и передаёт подходящих клиентов юристу.</p>
+<div class="hero-actions"><a class="button" href="#request">Запросить демонстрацию</a><a class="button ghost" href="#demo">Послушать звонки</a></div>
+<div class="hero-note"><span>01 /</span> Первый контакт без паузы на занятость команды</div>
+</div>
+</section>
+<section class="section">
+<div class="wrap">
+<div class="section-head"><div><div class="section-kicker">Проблема</div><h2>Клиент не обязан ждать.<br>Он может позвонить дальше.</h2></div><p class="section-intro">Когда команда занята, звонок может остаться без ответа. А вместе с ним — возможность начать разговор с потенциальным клиентом.</p></div>
+<div class="pain-grid">
+<div class="pain-main"><h3>Каждый пропущенный звонок — повод проверить, что происходит дальше.</h3><p>Кто перезванивает? Через сколько? Успевает ли менеджер выяснить, подходит ли обращение компании? Робот помогает закрыть этот первый участок пути.</p></div>
+<div class="pain-side"><div class="pain-item"><b>Звонок не принят</b><span>Обращение не должно просто исчезнуть из поля зрения.</span></div><div class="pain-item"><b>Команда занята</b><span>Первичный разговор можно не откладывать до освобождения менеджера.</span></div><div class="pain-item"><b>Юристу нужен контекст</b><span>Передача квалифицированного обращения помогает начать разговор предметно.</span></div></div>
+</div>
+</div>
+</section>
+<section class="section" id="how">
+<div class="wrap">
+<div class="section-head"><div><div class="section-kicker">Принцип работы</div><h2>Четыре шага.<br>Понятный маршрут лида.</h2></div><p class="section-intro">Робот берёт на себя первичный контакт. Юрист подключается там, где начинается профессиональная работа с клиентом.</p></div>
+<div class="steps">
+<article class="step"><div class="step-num">01 — ВХОДЯЩИЙ</div><h3>Принимает звонок</h3><p>Отвечает на входящее обращение, когда линия подключена к сценарию робота.</p><div class="line"></div></article>
+<article class="step"><div class="step-num">02 — ПРОПУЩЕННЫЙ</div><h3>Перезванивает</h3><p>Запускает обратный контакт по пропущенному обращению в рамках настроенного сценария.</p><div class="line"></div></article>
+<article class="step"><div class="step-num">03 — ДИАЛОГ</div><h3>Квалифицирует</h3><p>Задаёт согласованные вопросы и собирает первичную информацию.</p><div class="line"></div></article>
+<article class="step"><div class="step-num">04 — ПЕРЕДАЧА</div><h3>Передаёт юристу</h3><p>Передаёт квалифицированное обращение специалисту для дальнейшей работы.</p><div class="line"></div></article>
+</div>
+</div>
+</section>
+<section class="section">
+<div class="wrap">
+<div class="section-head"><div><div class="section-kicker">Задача продукта</div><h2>Не заменить юриста.<br>Помочь ему не пропустить разговор.</h2></div><p class="section-intro">Робот работает на первой линии коммуникации. Юридические консультации и решения остаются за специалистами компании.</p></div>
+<div class="feature-grid">
+<article class="feature"><div class="index">A / ДОСТУПНОСТЬ</div><h3>Первый контакт</h3><p>Обращение получает ответ по настроенному сценарию, а не ждёт, пока освободится сотрудник.</p></article>
+<article class="feature"><div class="index">B / СТРУКТУРА</div><h3>Единые вопросы</h3><p>Первичная информация собирается по согласованной логике квалификации.</p></article>
+<article class="feature"><div class="index">C / ПЕРЕДАЧА</div><h3>Контекст для юриста</h3><p>Специалист получает обращение, прошедшее первичный этап диалога.</p></article>
+</div>
+</div>
+</section>
+<section class="section" id="calculator">
+<div class="wrap">
+<div class="section-head"><div><div class="section-kicker">Калькулятор обращений</div><h2>Посмотрите на свой поток звонков.</h2></div><p class="section-intro">Измените параметры и оцените, сколько обращений может требовать повторного контакта.</p></div>
+<div class="calculator">
+<div class="calc-panel">
+<h3>Параметры компании</h3><p class="muted">Укажите ориентировочные значения за месяц.</p>
+<div class="range-field"><div class="range-top"><label for="calls">Входящие звонки в месяц</label><output id="callsOut">800</output></div><input id="calls" type="range" min="50" max="10000" step="50" value="800"><div class="range-limits"><span>50</span><span>10 000</span></div></div>
+<div class="range-field"><div class="range-top"><label for="missed">Доля пропущенных звонков</label><output id="missedOut">15%</output></div><input id="missed" type="range" min="0" max="80" step="1" value="15"><div class="range-limits"><span>0%</span><span>80%</span></div></div>
+<div class="range-field"><div class="range-top"><label for="reach">Доля обращений, с которыми удаётся связаться повторно</label><output id="reachOut">50%</output></div><input id="reach" type="range" min="0" max="100" step="5" value="50"><div class="range-limits"><span>0%</span><span>100%</span></div></div>
+</div>
+<div class="result-panel">
+<h3>Сценарная оценка</h3><p class="muted">Расчёт не является прогнозом продаж.</p>
+<div class="result-box"><div class="result-label">Пропущенные звонки за месяц</div><div class="result-value" id="missedResult">120</div></div>
+<div class="result-box"><div class="result-label">Повторные контакты при выбранной доле дозвона</div><div class="result-value" id="reachResult">60</div></div>
+<p class="result-small" id="calcFormula">800 звонков × 15% пропущенных = 120. Из них 50% повторных контактов = 60.</p>
+<p class="calc-disclaimer">Это арифметическая модель на ваших вводных. Она не учитывает повторные звонки одного клиента, качество контакта, конверсию в договор и фактическую доступность сотрудников. Значения по умолчанию — пример, не статистика рынка и не обещание результата.</p>
+</div>
+</div>
+</div>
+</section>
+<section class="section" id="demo">
+<div class="wrap">
+<div class="section-head"><div><div class="section-kicker">Демонстрация</div><h2>Послушайте, как звучит диалог.</h2></div><p class="section-intro">Три аудиопримера из материалов проекта. Если файл ещё не опубликован, плеер покажет сообщение.</p></div>
+<div class="audio-grid">
+<article class="audio-card"><div class="audio-label">DEMO / 01</div><h3>Квалификация обращения</h3><p>Пример первичного диалога с потенциальным клиентом.</p><audio controls preload="none"><source src="https://cdn.jsdelivr.net/gh/ynkozlova-cpu/govorun-ai@main/demos/bfl-kvalifikaciya.wav" type="audio/wav"></audio><div class="audio-status" aria-live="polite"></div></article>
+<article class="audio-card"><div class="audio-label">DEMO / 02</div><h3>Исходящий контакт</h3><p>Пример исходящего разговора по сценарию БФЛ.</p><audio controls preload="none"><source src="https://cdn.jsdelivr.net/gh/ynkozlova-cpu/govorun-ai@main/demos/bfl-demo-svetlana.wav" type="audio/wav"></audio><div class="audio-status" aria-live="polite"></div></article>
+<article class="audio-card"><div class="audio-label">DEMO / 03</div><h3>Тренажёр и обратная связь</h3><p>Отдельный пример тренировочного сценария для операторов.</p><audio controls preload="none"><source src="https://cdn.jsdelivr.net/gh/ynkozlova-cpu/govorun-ai@main/demos/bfl-trenazher-os.wav" type="audio/wav"></audio><div class="audio-status" aria-live="polite"></div></article>
+</div>
+</div>
+</section>
+<section class="section" id="request">
+<div class="wrap form-layout">
+<div class="form-copy"><div class="section-kicker">Следующий шаг</div><h2>Разберём, как это будет работать у вас.</h2><p>Оставьте контакты. Обсудим поток обращений, сценарий квалификации и способ передачи лида юристу.</p><div class="contact-line">ГОВОРУН AI / B2B COMMUNICATION SYSTEMS</div><div class="telegram-placeholder"><strong>Telegram-бот</strong>Ссылка будет добавлена после настройки: <span>[ССЫЛКА НА TELEGRAM-БОТ]</span></div></div>
+<form class="lead-form" id="leadForm">
+<div class="form-field"><label for="name">Как к вам обращаться</label><input id="name" name="name" autocomplete="name" placeholder="Ваше имя" required></div>
+<div class="form-field"><label for="company">Компания</label><input id="company" name="company" autocomplete="organization" placeholder="Название компании"></div>
+<div class="form-field"><label for="phone">Телефон или Telegram</label><input id="phone" name="phone" autocomplete="tel" placeholder="+7 … / @username" required></div>
+<div class="form-field"><label for="email">Электронная почта</label><input id="email" name="email" type="email" autocomplete="email" placeholder="name@company.ru"></div>
+<div class="form-field full"><label for="comment">Что важно учесть? (необязательно)</label><textarea id="comment" name="comment" placeholder="Например: сколько входящих звонков в день и как сейчас обрабатываются пропущенные"></textarea></div>
+<p class="consent">Нажимая кнопку, вы подготовите письмо с указанными данными в своём почтовом приложении. Отправка не происходит автоматически. Не указывайте персональные данные клиентов или сведения о здоровье.</p>
+<div class="form-submit"><button class="button" type="submit">Подготовить заявку</button><span class="form-help" id="formStatus" aria-live="polite">Откроется ваше почтовое приложение.</span></div>
+</form>
+</div>
+</section>
+</main>
+<div class="wrap"><footer class="footer"><span><strong>ГОВОРУН AI</strong> · Общается. Анализирует. Обучает.</span><span>Робот-квалификатор для компаний БФЛ · <a href="mailto:ynkozlova@gmail.com">ynkozlova@gmail.com</a></span><span>© <span id="year"></span></span></footer></div>
+<script>
+(()=> {
+ const $=id=>document.getElementById(id);
+ const fmt=n=>new Intl.NumberFormat('ru-RU',{maximumFractionDigits:0}).format(n);
+ const ids=['calls','missed','reach'];
+ function calculate(){
+   const calls=Number($('calls').value), missed=Number($('missed').value), reach=Number($('reach').value);
+   const missedCount=calls*missed/100, reached=missedCount*reach/100;
+   $('callsOut').textContent=fmt(calls);
+   $('missedOut').textContent=missed+'%';
+   $('reachOut').textContent=reach+'%';
+   $('missedResult').textContent=fmt(missedCount);
+   $('reachResult').textContent=fmt(reached);
+   $('calcFormula').textContent=fmt(calls)+' звонков × '+missed+'% пропущенных = '+fmt(missedCount)+'. При повторном контакте с '+reach+'% обращений — '+fmt(reached)+'.';
+ }
+ ids.forEach(id=>$(id).addEventListener('input',calculate));calculate();
+ document.querySelectorAll('.audio-card audio').forEach(audio=>{
+   const status=audio.parentElement.querySelector('.audio-status');
+   audio.addEventListener('error',()=>{status.textContent='Не удалось загрузить аудио. Проверьте публикацию файла.'});
+   audio.addEventListener('loadedmetadata',()=>{status.textContent=''});
+ });
+ $('leadForm').addEventListener('submit',e=>{
+   e.preventDefault();
+   const d=new FormData(e.currentTarget);
+   const lines=['Заявка с сайта Говорун AI','', 'Имя: '+(d.get('name')||''),'Компания: '+(d.get('company')||''),'Телефон / Telegram: '+(d.get('phone')||''),'Email: '+(d.get('email')||''),'Комментарий: '+(d.get('comment')||'')];
+   const subject=encodeURIComponent('Заявка на демонстрацию робота-квалификатора БФЛ');
+   const body=encodeURIComponent(lines.join('\n'));
+   $('formStatus').textContent='Открываем почтовое приложение. Проверьте письмо и нажмите «Отправить».';
+   window.location.href='mailto:ynkozlova@gmail.com?subject='+subject+'&body='+body;
+ });
+ $('year').textContent=new Date().getFullYear();
+})();
+</script>
+</body>
+</html>
